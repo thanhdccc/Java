@@ -4,11 +4,9 @@ public class Color {
 	private String name;
 	
 	public Color() {
-		super();
 	}
 	
 	public Color(int id, String name) {
-		super();
 		this.id = id;
 		this.name = name;
 	}

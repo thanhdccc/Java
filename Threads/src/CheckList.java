@@ -4,19 +4,18 @@ import java.util.stream.Collectors;
 
 public class CheckList implements Runnable {
 
-	private String name;
 	private List<Integer> list;
 
-	public CheckList(String name, List<Integer> list) {
-		this.name = name;
+	public CheckList(List<Integer> list) {
 		this.list = list;
 	}
 
 	@Override
 	public void run() {
+		String threadName = Thread.currentThread().getName();
 		List<Integer> check = new ArrayList<>();
 		check = list.stream().filter(value -> value % 5 == 0).collect(Collectors.toList());
-		//check.forEach(n -> System.out.println(name + ": " + n));
+		check.forEach(n -> System.out.println(threadName + ": " + n));
 	}
 
 }

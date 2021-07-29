@@ -5,10 +5,11 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
 		Scanner scanner = new Scanner(System.in);
 		Random random = new Random();
@@ -46,16 +47,8 @@ public class Main {
 				Thread checkNumber = new Thread(new CheckInteger());
 				generateNumber.start();
 				checkNumber.start();
-				try {
-					generateNumber.join();
-				} catch (InterruptedException e) {
-					System.out.println("Message: " + e.toString());
-				}
-				try {
-					checkNumber.join();
-				} catch (InterruptedException e) {
-					System.out.println("Message: " + e.toString());
-				}
+				generateNumber.join();
+				checkNumber.join();
 				break;
 
 			case 2:
@@ -112,38 +105,56 @@ public class Main {
 
 					case 2:
 						final long startTimeBT2Case2 = System.currentTimeMillis();
-						ExecutorService pool = Executors.newCachedThreadPool();
-						pool.execute(new Thread(new CheckList("Thread 1", sub1)));
-						pool.execute(new Thread(new CheckList("Thread 2", sub2)));
-						pool.execute(new Thread(new CheckList("Thread 3", sub3)));
-						pool.execute(new Thread(new CheckList("Thread 4", sub4)));
-						pool.execute(new Thread(new CheckList("Thread 5", sub5)));
-						pool.execute(new Thread(new CheckList("Thread 6", sub6)));
-						pool.execute(new Thread(new CheckList("Thread 7", sub7)));
-						pool.execute(new Thread(new CheckList("Thread 8", sub8)));
-						pool.execute(new Thread(new CheckList("Thread 9", sub9)));
-						pool.execute(new Thread(new CheckList("Thread 10", sub10)));
-						pool.shutdown();
-//						Thread thread1 = new Thread(new CheckList("Thread 1", sub1));
-//						Thread thread2 = new Thread(new CheckList("Thread 2", sub2));
-//						Thread thread3 = new Thread(new CheckList("Thread 3", sub3));
-//						Thread thread4 = new Thread(new CheckList("Thread 4", sub4));
-//						Thread thread5 = new Thread(new CheckList("Thread 5", sub5));
-//						Thread thread6 = new Thread(new CheckList("Thread 6", sub6));
-//						Thread thread7 = new Thread(new CheckList("Thread 7", sub7));
-//						Thread thread8 = new Thread(new CheckList("Thread 8", sub8));
-//						Thread thread9 = new Thread(new CheckList("Thread 9", sub9));
-//						Thread thread10 = new Thread(new CheckList("Thread 10", sub10));
-//						thread1.start();
-//						thread2.start();
-//						thread3.start();
-//						thread4.start();
-//						thread5.start();
-//						thread6.start();
-//						thread7.start();
-//						thread8.start();
-//						thread9.start();
-//						thread10.start();
+//						ExecutorService pool = Executors.newFixedThreadPool(10);
+//						pool.execute(new Thread(new CheckList(sub1)));
+//						pool.execute(new Thread(new CheckList(sub2)));
+//						pool.execute(new Thread(new CheckList(sub3)));
+//						pool.execute(new Thread(new CheckList(sub4)));
+//						pool.execute(new Thread(new CheckList(sub5)));
+//						pool.execute(new Thread(new CheckList(sub6)));
+//						pool.execute(new Thread(new CheckList(sub7)));
+//						pool.execute(new Thread(new CheckList(sub8)));
+//						pool.execute(new Thread(new CheckList(sub9)));
+//						pool.execute(new Thread(new CheckList(sub10)));
+//						pool.shutdown();
+//						try {
+//					        if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+//					        	pool.shutdownNow();
+//					        }
+//					    } catch (InterruptedException ex) {
+//					    	pool.shutdownNow();
+//					        Thread.currentThread().interrupt();
+//					    }
+						Thread thread1 = new Thread(new CheckList(sub1));
+						Thread thread2 = new Thread(new CheckList(sub2));
+						Thread thread3 = new Thread(new CheckList(sub3));
+						Thread thread4 = new Thread(new CheckList(sub4));
+						Thread thread5 = new Thread(new CheckList(sub5));
+						Thread thread6 = new Thread(new CheckList(sub6));
+						Thread thread7 = new Thread(new CheckList(sub7));
+						Thread thread8 = new Thread(new CheckList(sub8));
+						Thread thread9 = new Thread(new CheckList(sub9));
+						Thread thread10 = new Thread(new CheckList(sub10));
+						thread1.start();
+						thread2.start();
+						thread3.start();
+						thread4.start();
+						thread5.start();
+						thread6.start();
+						thread7.start();
+						thread8.start();
+						thread9.start();
+						thread10.start();
+						thread1.join();
+						thread2.join();
+						thread3.join();
+						thread4.join();
+						thread5.join();
+						thread6.join();
+						thread7.join();
+						thread8.join();
+						thread9.join();
+						thread10.join();
 						final long endTimeBT2Case2 = System.currentTimeMillis();
 						System.out.println(
 								"Total execution time (milliseconds): " + (endTimeBT2Case2 - startTimeBT2Case2));

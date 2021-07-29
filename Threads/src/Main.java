@@ -118,13 +118,13 @@ public class Main {
 //						pool.execute(new Thread(new CheckList(sub10)));
 //						pool.shutdown();
 //						try {
-//					        if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-//					        	pool.shutdownNow();
-//					        }
-//					    } catch (InterruptedException ex) {
-//					    	pool.shutdownNow();
-//					        Thread.currentThread().interrupt();
-//					    }
+//							if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+//								pool.shutdownNow();
+//							}
+//						} catch (InterruptedException ex) {
+//							pool.shutdownNow();
+//							Thread.currentThread().interrupt();
+//						}
 						Thread thread1 = new Thread(new CheckList(sub1));
 						Thread thread2 = new Thread(new CheckList(sub2));
 						Thread thread3 = new Thread(new CheckList(sub3));

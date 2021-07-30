@@ -6,8 +6,12 @@ import java.util.stream.Collectors;
 
 public class Main {
 	
-	private static String inputName(List<Category> listCategories, Scanner scanner, int option1, int option2) {
+	private static CategoryService categoryService = null;
+	
+	private static String inputCategoryName(List<Category> categoryList, int option1, int option2) {
 		List<Category> matchingCategory = new ArrayList<>();
+		Scanner scanner = new Scanner(System.in);
+		
 		do {
 			if (option2 == 0) {
 				System.out.print("Enter category name: ");
@@ -16,11 +20,12 @@ public class Main {
 			}
 			String name = scanner.nextLine();
 			System.out.print("");
-			matchingCategory = listCategories.stream()
+			matchingCategory = categoryList.stream()
 					.filter(c -> c.getName().equalsIgnoreCase(name))
 					.collect(Collectors.toList());
 			if (option1 == 0) {
 				if (matchingCategory.size() == 0) {
+					
 					return name;
 				} else {
 					System.out.println("Duplicate!");
@@ -29,6 +34,7 @@ public class Main {
 				if (matchingCategory.size() == 0) {
 					System.out.println("Not Exist!");
 				} else {
+					
 					return name;
 				}
 			}
@@ -36,13 +42,16 @@ public class Main {
 		} while (true);
 	}
 	
-	private static int inputOption(int min, int max, Scanner scanner) {
+	private static int inputOption(int min, int max) {
+		Scanner scanner = new Scanner(System.in);
 		int option;
+		
 		do {
 			System.out.print("Enter your choise: ");
 			try {
 				option = scanner.nextInt();
 				if (option <= max || option >= min) {
+					
 					return option;
 				}
 			} catch (InputMismatchException ex) {
@@ -64,30 +73,66 @@ public class Main {
 		System.out.println("---------------");
 	}
 	
-	private static void categoryManagement(List<Category> listCategories, Scanner scanner) {
-		CategoryService service = new CategoryService();
+	private static void mainMenu() {
+		System.out.println("---------------------------------------");
+		System.out.println("1. Quan ly Category.");
+		System.out.println("2. Quan ly Product.");
+		System.out.println("3. Quan ly Order.");
+		System.out.println("4. Thong ke so luong moi Category.");
+		System.out.println("5. Thong ke 10 san ban chay.");
+		System.out.println("6. Exit.");
+		System.out.println("---------------------------------------");
+	}
+	
+	private static void categoryManagement() {
+		Scanner scanner = new Scanner(System.in);
+		
+		if (categoryService == null) {
+			categoryService = new CategoryService();
+		}
 		int option = 0;
 		boolean checkOption = true;
 		do {
 			subMenu();
-			option = inputOption(1, 5, scanner);
+			option = inputOption(1, 5);
 			scanner.nextLine();
 			switch (option) {
 			case 1:
-				service.listCategory(listCategories);
+				List<Category> categoryList = categoryService.getAll();
+				if (categoryList.size() == 0) {
+					System.out.println("List of Category is empty!");
+				} else {
+					categoryList.forEach(System.out::println);
+				}
 				break;
 			case 2:
-				String categoryName = inputName(listCategories, scanner, 0, 0);
-				service.addCategory(listCategories, categoryName);
+				String categoryName = inputCategoryName(categoryService.getAll(), 0, 0);
+				Category resultAdd = categoryService.add(categoryName);
+				if (resultAdd != null) {
+					System.out.println("Add success!");
+				} else {
+					System.out.println("Add failed!");
+				}
 				break;
 			case 3:
-				String oldCategoryName = inputName(listCategories, scanner, 1, 0);
-				String newCategoryName = inputName(listCategories, scanner, 0, 1);
-				service.editCategory(listCategories,oldCategoryName, newCategoryName);
+				String categoryNameOld = inputCategoryName(categoryService.getAll(), 1, 0);
+				String categoryNameNew = inputCategoryName(categoryService.getAll(), 0, 1);
+				Category categoryTmp = categoryService.getByName(categoryNameOld);
+				boolean updateResult = categoryService.update(categoryTmp, categoryNameNew);
+				if (updateResult == true) {
+					System.out.println("Update success!");
+				} else {
+					System.out.println("Update failed!");
+				}
 				break;
 			case 4:
-				String deleteCategoryName = inputName(listCategories, scanner, 1, 0);
-				service.deleteCategory(listCategories, deleteCategoryName);
+				String categoryNameDelete = inputCategoryName(categoryService.getAll(), 1, 0);
+				boolean deleteResult = categoryService.delete(categoryNameDelete);
+				if (deleteResult == true) {
+					System.out.println("Delete success!");
+				} else {
+					System.out.println("Delete failed!");
+				}
 				break;
 			case 5:
 				checkOption = false;
@@ -97,27 +142,16 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		
-		Scanner scanner = new Scanner(System.in);
-		List<Category> listCategories = new ArrayList<>();
 		int option = 0;
 		boolean checkOption = true;
 
 		do {
-			System.out.println("---------------------------------------");
-			System.out.println("1. Quan ly Category.");
-			System.out.println("2. Quan ly Product.");
-			System.out.println("3. Quan ly Order.");
-			System.out.println("4. Thong ke so luong moi Category.");
-			System.out.println("5. Thong ke 10 san ban chay.");
-			System.out.println("6. Exit.");
-			System.out.println("---------------------------------------");
-			
-			option = inputOption(1, 6, scanner);
+			mainMenu();
+			option = inputOption(1, 6);
 			
 			switch (option) {
 			case 1:
-				categoryManagement(listCategories, scanner);
+				categoryManagement();
 				break;
 			case 2:
 				break;
@@ -132,7 +166,5 @@ public class Main {
 				break;
 			}
 		} while (checkOption);
-		
-		scanner.close();
 	}
 }

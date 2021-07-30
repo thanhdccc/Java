@@ -1,55 +1,67 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService {
 
-	public void listCategory(List<Category> listCategories) {
-		if (listCategories.size() == 0) {
-			System.out.println("List of Category is empty!");
+	private List<Category> categoryList = new ArrayList<>();
+
+	public List<Category> getAll() {
+		return categoryList;
+	}
+
+	public Category add(String categoryName) {
+		int categoryId = 0;
+		if (categoryList.size() == 0) {
+			categoryId = 1;
 		} else {
-			listCategories.forEach(System.out::println);
+			categoryId = categoryList.get(categoryList.size() - 1).getId() + 1;
+		}
+		try {
+			Category category = new Category(categoryId, categoryName);
+			categoryList.add(category);
+
+			return category;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
-	public void addCategory(List<Category> listCategories, String categoryName) {
-		int categoryId = 0;
-		if (listCategories.size() == 0) {
-			categoryId = 1;
-		} else {
-			categoryId = listCategories.get(listCategories.size() - 1).getId() + 1;
+	public boolean update(Category categoryUpdate, String newName) {
+		int id = categoryUpdate.getId();
+		Category categoryTmp = null;
+
+		for (int i = 0; i < categoryList.size(); i++) {
+			categoryTmp = categoryList.get(i);
+			if (categoryTmp.getId() == id) {
+				try {
+					categoryTmp.setName(newName);
+					
+					return true;
+				} catch (Exception e) {
+					return false;
+				}
+			}
 		}
+		return false;
+	}
+
+	public Category getByName(String categoryName) {
+		for (int i = 0; i < categoryList.size(); i++) {
+			if (categoryList.get(i).getName().equals(categoryName)) {
+				
+				return categoryList.get(i);
+			}
+		}
+		return null;
+	}
+
+	public boolean delete(String deleteCategoryName) {
 		try {
-			listCategories.add(new Category(categoryId, categoryName));
-			System.out.println("Add success!");
+			categoryList.remove(getByName(deleteCategoryName));
+			
+			return true;
 		} catch (Exception e) {
-			System.out.println("Add failed!");
-		}
-	}
-	
-	public void editCategory(List<Category> listCategories, String oldCategoryName, String newCategoryName) {
-		for (int i = 0; i < listCategories.size(); i++) {
-			if (listCategories.get(i).getName().equals(oldCategoryName)) {
-				try {
-					listCategories.get(i).setName(newCategoryName);
-					System.out.println("Edit success!");
-				} catch (Exception e) {
-					System.out.println("Edit failed!");
-				}
-			}
-		}
-	}
-	
-	public void deleteCategory(List<Category> listCategories, String deleteCategoryName) {
-		for (int i = 0; i < listCategories.size(); i++) {
-			if (listCategories.get(i).getName().equals(deleteCategoryName)) {
-				try {
-					listCategories.remove(i);
-					i--;
-					System.out.println("Delete success!");
-					break;
-				} catch (Exception e) {
-					System.out.println("Delete failed!");
-				}
-			}
+			return false;
 		}
 	}
 }

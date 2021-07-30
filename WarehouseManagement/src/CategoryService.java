@@ -14,7 +14,7 @@ public class CategoryService {
 		if (categoryList.size() == 0) {
 			categoryId = 1;
 		} else {
-			categoryId = categoryList.get(categoryList.size() - 1).getId() + 1;
+			categoryId = categoryList.get(categoryList.size() - 1).getCategoryId() + 1;
 		}
 		try {
 			Category category = new Category(categoryId, categoryName);
@@ -27,14 +27,14 @@ public class CategoryService {
 	}
 
 	public boolean update(Category categoryUpdate, String newName) {
-		int id = categoryUpdate.getId();
+		int id = categoryUpdate.getCategoryId();
 		Category categoryTmp = null;
 
 		for (int i = 0; i < categoryList.size(); i++) {
 			categoryTmp = categoryList.get(i);
-			if (categoryTmp.getId() == id) {
+			if (categoryTmp.getCategoryId() == id) {
 				try {
-					categoryTmp.setName(newName);
+					categoryTmp.setCategoryName(newName);
 					
 					return true;
 				} catch (Exception e) {
@@ -47,7 +47,7 @@ public class CategoryService {
 
 	public Category getByName(String categoryName) {
 		for (int i = 0; i < categoryList.size(); i++) {
-			if (categoryList.get(i).getName().equals(categoryName)) {
+			if (categoryList.get(i).getCategoryName().equals(categoryName)) {
 				return categoryList.get(i);
 			}
 		}

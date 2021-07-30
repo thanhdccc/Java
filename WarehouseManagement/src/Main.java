@@ -21,7 +21,7 @@ public class Main {
 			}
 			String name = scanner.nextLine();
 			System.out.print("");
-			matchingCategory = categoryList.stream().filter(c -> c.getName().equalsIgnoreCase(name))
+			matchingCategory = categoryList.stream().filter(c -> c.getCategoryName().equalsIgnoreCase(name))
 					.collect(Collectors.toList());
 			if (option1 == 0) {
 				if (matchingCategory.size() == 0) {
@@ -54,7 +54,7 @@ public class Main {
 			}
 			String name = scanner.nextLine();
 			System.out.print("");
-			matchingProduct = productList.stream().filter(c -> c.getName().equalsIgnoreCase(name))
+			matchingProduct = productList.stream().filter(c -> c.getProductName().equalsIgnoreCase(name))
 					.collect(Collectors.toList());
 			if (option1 == 0) {
 				if (matchingProduct.size() == 0) {
@@ -143,7 +143,8 @@ public class Main {
 		System.out.println("1. Update product name.");
 		System.out.println("2. Update product price.");
 		System.out.println("3. Update product quantity.");
-		System.out.println("4. Back.");
+		System.out.println("4. Update product category.");
+		System.out.println("5. Back.");
 		System.out.println("---------------");
 	}
 
@@ -151,6 +152,9 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		if (productService == null) {
 			productService = new ProductService();
+		}
+		if (categoryService == null) {
+			categoryService = new CategoryService();
 		}
 		int option = 0;
 		boolean checkOption = true;
@@ -161,13 +165,13 @@ public class Main {
 
 		do {
 			subProductManagementMenu();
-			option = inputOption(1, 4);
+			option = inputOption(1, 5);
 
 			switch (option) {
 			case 1:
 				productNameNew = inputProductName(productService.getAll(), 0, 1);
 				productTmp = productService.getByName(productNameOld);
-				resultUpdate = productService.update(productTmp, productNameNew, 0, 0, 1);
+				resultUpdate = productService.update(productTmp, productNameNew, 0, 0, 0, null, 1);
 				
 				if (resultUpdate == true) {
 					isNameUpdated = true;
@@ -180,7 +184,7 @@ public class Main {
 				float productPriceNew = inputProductPrice(1);
 				productTmp = isNameUpdated ? productService.getByName(productNameNew)
 						: productService.getByName(productNameOld);
-				resultUpdate = productService.update(productTmp, null, productPriceNew, 0, 2);
+				resultUpdate = productService.update(productTmp, null, productPriceNew, 0, 0, null, 2);
 				
 				if (resultUpdate == true) {
 					System.out.println("Update success!");
@@ -192,7 +196,7 @@ public class Main {
 				int productQuantityNew = inputProductQuantity(1);
 				productTmp = isNameUpdated ? productService.getByName(productNameNew)
 						: productService.getByName(productNameOld);
-				resultUpdate = productService.update(productTmp, null, 0, productQuantityNew, 3);
+				resultUpdate = productService.update(productTmp, null, 0, productQuantityNew, 0, null, 3);
 				
 				if (resultUpdate == true) {
 					System.out.println("Update success!");
@@ -201,6 +205,19 @@ public class Main {
 				}
 				break;
 			case 4:
+				String productCategoryNameUpdate = inputCategoryName(categoryService.getAll(), 1, 1);
+				int productCategoryIdUpdate = categoryService.getByName(productCategoryNameUpdate).getCategoryId();
+				productTmp = isNameUpdated ? productService.getByName(productNameNew)
+						: productService.getByName(productNameOld);
+				resultUpdate = productService.update(productTmp, null, 0, 0, productCategoryIdUpdate, productCategoryNameUpdate, 4);
+				
+				if (resultUpdate == true) {
+					System.out.println("Update success!");
+				} else {
+					System.out.println("Update failed!");
+				}
+				break;
+			case 5:
 				checkOption = false;
 				break;
 			}
@@ -233,6 +250,9 @@ public class Main {
 		if (categoryService == null) {
 			categoryService = new CategoryService();
 		}
+		if (productService == null) {
+			productService = new ProductService();
+		}
 		int option = 0;
 		boolean checkOption = true;
 		
@@ -261,25 +281,38 @@ public class Main {
 				}
 				break;
 			case 3:
-				String categoryNameOld = inputCategoryName(categoryService.getAll(), 1, 0);
-				String categoryNameNew = inputCategoryName(categoryService.getAll(), 0, 1);
-				Category categoryTmp = categoryService.getByName(categoryNameOld);
-				boolean resultUpdate = categoryService.update(categoryTmp, categoryNameNew);
-				
-				if (resultUpdate == true) {
-					System.out.println("Update success!");
+				if (categoryService.getAll().size() == 0) {
+					System.out.println("There is no Category to update!");
 				} else {
-					System.out.println("Update failed!");
+					String categoryNameOld = inputCategoryName(categoryService.getAll(), 1, 0);
+					String categoryNameNew = inputCategoryName(categoryService.getAll(), 0, 1);
+					Category categoryTmp = categoryService.getByName(categoryNameOld);
+					boolean resultUpdate = categoryService.update(categoryTmp, categoryNameNew);
+					
+					if (resultUpdate == true) {
+						System.out.println("Update success!");
+					} else {
+						System.out.println("Update failed!");
+					}
 				}
 				break;
 			case 4:
-				String categoryNameDelete = inputCategoryName(categoryService.getAll(), 1, 0);
-				boolean resultDelete = categoryService.delete(categoryNameDelete);
-				
-				if (resultDelete == true) {
-					System.out.println("Delete success!");
+				if (categoryService.getAll().size() == 0) {
+					System.out.println("There is no Category to delete!");
 				} else {
-					System.out.println("Delete failed!");
+					String categoryNameDelete = inputCategoryName(categoryService.getAll(), 1, 0);
+					if (productService.getByCategoryName(categoryNameDelete) == null) {
+						boolean resultDelete = categoryService.delete(categoryNameDelete);
+						
+						if (resultDelete == true) {
+							System.out.println("Delete success!");
+						} else {
+							System.out.println("Delete failed!");
+						}
+					} else {
+						System.out.printf("There is a Product belong to %s category. Delete failed!", categoryNameDelete);
+						System.out.println();
+					}
 				}
 				break;
 			case 5:
@@ -293,6 +326,9 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		if (productService == null) {
 			productService = new ProductService();
+		}
+		if (categoryService == null) {
+			categoryService = new CategoryService();
 		}
 		int option = 0;
 		boolean checkOption = true;
@@ -312,29 +348,43 @@ public class Main {
 				}
 				break;
 			case 2:
-				String productName = inputProductName(productService.getAll(), 0, 0);
-				float productPrice = inputProductPrice(0);
-				int productQuantity = inputProductQuantity(0);
-				Product resultAdd = productService.add(productName, productPrice, productQuantity);
-				
-				if (resultAdd != null) {
-					System.out.println("Add success!");
+				if (categoryService.getAll().size() == 0) {
+					System.out.println("There is no Category exsit. Please add a Category first!");
 				} else {
-					System.out.println("Add failed!");
+					String productName = inputProductName(productService.getAll(), 0, 0);
+					float productPrice = inputProductPrice(0);
+					int productQuantity = inputProductQuantity(0);
+					String categoryName = inputCategoryName(categoryService.getAll(), 1, 0);
+					int categoryId = categoryService.getByName(categoryName).getCategoryId();
+					Product resultAdd = productService.add(productName, productPrice, productQuantity, categoryId, categoryName);
+					
+					if (resultAdd != null) {
+						System.out.println("Add success!");
+					} else {
+						System.out.println("Add failed!");
+					}
 				}
 				break;
 			case 3:
-				String productNameOld = inputProductName(productService.getAll(), 1, 0);
-				productUpdateManagement(productNameOld);
+				if (productService.getAll().size() == 0) {
+					System.out.println("There is no Product to update!");
+				} else {
+					String productNameOld = inputProductName(productService.getAll(), 1, 0);
+					productUpdateManagement(productNameOld);
+				}
 				break;
 			case 4:
-				String productNameDelete = inputProductName(productService.getAll(), 1, 0);
-				boolean resultDelete = productService.delete(productNameDelete);
-				
-				if (resultDelete == true) {
-					System.out.println("Delete success!");
+				if (productService.getAll().size() == 0) {
+					System.out.println("There is no Product to delete!");
 				} else {
-					System.out.println("Delete failed!");
+					String productNameDelete = inputProductName(productService.getAll(), 1, 0);
+					boolean resultDelete = productService.delete(productNameDelete);
+					
+					if (resultDelete == true) {
+						System.out.println("Delete success!");
+					} else {
+						System.out.println("Delete failed!");
+					}
 				}
 				break;
 			case 5:

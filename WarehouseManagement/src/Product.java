@@ -1,54 +1,56 @@
 
-public class Product {
-	private int id;
-	private String name;
-	private float price;
-	private int quantity;
+public class Product extends Category{
+	private int productId;
+	private String productName;
+	private float productPrice;
+	private int productQuantity;
 	
 	public Product() {
+		
 	}
 	
-	public Product(int id, String name, float price, int quantity) {
-		this.id = id;
-		this.name = name;
-		this.price = price;
-		this.quantity = quantity;
+	public Product(int categoryId, String categoryName, int productId, String productName, float productPrice, int productQuantity) {
+		super(categoryId, categoryName);
+		this.productId = productId;
+		this.productName = productName;
+		this.productPrice = productPrice;
+		this.productQuantity = productQuantity;
 	}
 
-	public int getId() {
-		return id;
+	public int getProductId() {
+		return productId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setProductId(int productId) {
+		this.productId = productId;
 	}
 
-	public String getName() {
-		return name;
+	public String getProductName() {
+		return productName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
-	public float getPrice() {
-		return price;
+	public float getProductPrice() {
+		return productPrice;
 	}
 
-	public void setPrice(float price) {
-		this.price = price;
+	public void setProductPrice(float productPrice) {
+		this.productPrice = productPrice;
 	}
 
-	public int getQuantity() {
-		return quantity;
+	public int getProductQuantity() {
+		return productQuantity;
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+	public void setProductQuantity(int productQuantity) {
+		this.productQuantity = productQuantity;
 	}
-	
+
 	@Override
 	public String toString() {
-		return String.format("Product ID: %d - Product Name: %s - Product Price: %.4f - Product Quantity: %d", id, name, price, quantity);
+		return String.format("Product ID: %d - Product Name: %s - Product Price: %.4f - Product Quantity: %d - Category ID: %d - Category Name: %s", productId, productName, productPrice, productQuantity, getCategoryId(), getCategoryName());
 	}
 }

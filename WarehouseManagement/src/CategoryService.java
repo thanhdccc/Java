@@ -48,16 +48,15 @@ public class CategoryService {
 	public Category getByName(String categoryName) {
 		for (int i = 0; i < categoryList.size(); i++) {
 			if (categoryList.get(i).getName().equals(categoryName)) {
-				
 				return categoryList.get(i);
 			}
 		}
 		return null;
 	}
 
-	public boolean delete(String deleteCategoryName) {
+	public boolean delete(String categoryNameDelete) {
 		try {
-			categoryList.remove(getByName(deleteCategoryName));
+			categoryList.remove(getByName(categoryNameDelete));
 			
 			return true;
 		} catch (Exception e) {

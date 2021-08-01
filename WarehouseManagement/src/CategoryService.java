@@ -44,6 +44,10 @@ public class CategoryService {
 		}
 		return false;
 	}
+	
+	public int getTotalProductByCategoryName(String categoryName) {
+		return getByName(categoryName).getProductList().size();
+	}
 
 	public Category getByName(String categoryName) {
 		for (int i = 0; i < categoryList.size(); i++) {

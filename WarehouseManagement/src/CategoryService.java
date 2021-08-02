@@ -26,15 +26,16 @@ public class CategoryService {
 		}
 	}
 
-	public boolean update(Category categoryUpdate, String newName) {
+	public boolean update(Category categoryUpdate) {
 		int id = categoryUpdate.getCategoryId();
+		String name = categoryUpdate.getCategoryName();
 		Category categoryTmp = null;
 
 		for (int i = 0; i < categoryList.size(); i++) {
 			categoryTmp = categoryList.get(i);
 			if (categoryTmp.getCategoryId() == id) {
 				try {
-					categoryTmp.setCategoryName(newName);
+					categoryTmp.setCategoryName(name);
 					
 					return true;
 				} catch (Exception e) {
@@ -43,10 +44,6 @@ public class CategoryService {
 			}
 		}
 		return false;
-	}
-	
-	public int getTotalProductByCategoryName(String categoryName) {
-		return getByName(categoryName).getProductList().size();
 	}
 
 	public Category getByName(String categoryName) {
@@ -66,5 +63,14 @@ public class CategoryService {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	public Category getById(int categoryId) {
+		for (int i = 0; i < categoryList.size(); i++) {
+			if (categoryList.get(i).getCategoryId() == categoryId) {
+				return categoryList.get(i);
+			}
+		}
+		return null;
 	}
 }

@@ -1,20 +1,22 @@
 
-public class Product extends Category{
+public class Product{
+	
 	private int productId;
 	private String productName;
 	private float productPrice;
 	private int productQuantity;
+	private int categoryId;
 	
 	public Product() {
 		
 	}
 	
-	public Product(int categoryId, String categoryName, int productId, String productName, float productPrice, int productQuantity) {
-		super(categoryId, categoryName);
+	public Product(int productId, String productName, float productPrice, int productQuantity, int categoryId) {
 		this.productId = productId;
 		this.productName = productName;
 		this.productPrice = productPrice;
 		this.productQuantity = productQuantity;
+		this.categoryId = categoryId;
 	}
 
 	public int getProductId() {
@@ -49,8 +51,16 @@ public class Product extends Category{
 		this.productQuantity = productQuantity;
 	}
 
+	public int getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(int categoryId) {
+		this.categoryId = categoryId;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("Product ID: %d - Product Name: %s - Product Price: %.4f - Product Quantity: %d - Category ID: %d - Category Name: %s", productId, productName, productPrice, productQuantity, getCategoryId(), getCategoryName());
+		return String.format("Product ID: %d - Product Name: %s - Product Price: %.4f - Product Quantity: %d - Category ID: %d", productId, productName, productPrice, productQuantity, getCategoryId());
 	}
 }

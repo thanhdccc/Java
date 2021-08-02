@@ -3,21 +3,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 public class Main {
 
 	private static final String FILE_ADDRESS = "c://";
 	private static final String FILE_EXTENSION = ".txt";
 
+	@SuppressWarnings("null")
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 

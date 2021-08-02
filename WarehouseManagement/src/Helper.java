@@ -5,9 +5,10 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Helper {
-	
+
 	@SuppressWarnings("resource")
 	public String inputCategoryName(List<Category> categoryList, int option1, int option2) {
+
 		List<Category> matchingCategory = new ArrayList<>();
 		Scanner scanner = new Scanner(System.in);
 
@@ -19,10 +20,12 @@ public class Helper {
 			} else if (option2 == 2) {
 				System.out.print("Enter Category Name that Product belong to: ");
 			}
+
 			String name = scanner.nextLine();
 			System.out.print("");
 			matchingCategory = categoryList.stream().filter(c -> c.getCategoryName().equalsIgnoreCase(name))
 					.collect(Collectors.toList());
+
 			if (option1 == 0) {
 				if (matchingCategory.size() == 0) {
 
@@ -31,6 +34,7 @@ public class Helper {
 					System.out.println("Duplicate!");
 				}
 			} else if (option1 == 1) {
+
 				if (matchingCategory.size() == 0) {
 					System.out.println("Not Exist!");
 				} else {
@@ -54,10 +58,12 @@ public class Helper {
 			} else if (option2 == 1) {
 				System.out.print("Enter new product name: ");
 			}
+
 			String name = scanner.nextLine();
 			System.out.print("");
 			matchingProduct = productList.stream().filter(c -> c.getProductName().equalsIgnoreCase(name))
 					.collect(Collectors.toList());
+
 			if (option1 == 0) {
 				if (matchingProduct.size() == 0) {
 
@@ -66,6 +72,7 @@ public class Helper {
 					System.out.println("Duplicate!");
 				}
 			} else if (option1 == 1) {
+
 				if (matchingProduct.size() == 0) {
 					System.out.println("Not Exist!");
 				} else {
@@ -84,15 +91,18 @@ public class Helper {
 		Scanner scanner = new Scanner(System.in);
 
 		do {
+
 			if (option2 == 0) {
 				System.out.print("Enter order name: ");
 			} else if (option2 == 1) {
 				System.out.print("Enter new order name: ");
 			}
+
 			String name = scanner.nextLine();
 			System.out.print("");
 			matchingOrder = orderList.stream().filter(c -> c.getOrderName().equalsIgnoreCase(name))
 					.collect(Collectors.toList());
+
 			if (option1 == 0) {
 				if (matchingOrder.size() == 0) {
 
@@ -101,6 +111,7 @@ public class Helper {
 					System.out.println("Duplicate!");
 				}
 			} else if (option1 == 1) {
+
 				if (matchingOrder.size() == 0) {
 					System.out.println("Not Exist!");
 				} else {
@@ -119,11 +130,13 @@ public class Helper {
 		float price;
 
 		do {
+
 			if (option == 0) {
 				System.out.print("Enter product price: ");
 			} else if (option == 1) {
 				System.out.print("Enter new product price: ");
 			}
+
 			try {
 				price = scanner.nextFloat();
 
@@ -148,6 +161,7 @@ public class Helper {
 			} else if (option == 1) {
 				System.out.print("Enter new product quantity: ");
 			}
+
 			try {
 				quantity = scanner.nextInt();
 
@@ -162,6 +176,7 @@ public class Helper {
 
 	@SuppressWarnings("resource")
 	public int inputOption(int min, int max) {
+
 		Scanner scanner = new Scanner(System.in);
 		int option;
 
@@ -169,10 +184,12 @@ public class Helper {
 			System.out.print("Enter your choise: ");
 			try {
 				option = scanner.nextInt();
+
 				if (option > max || option < min) {
 					System.out.printf("Please input number (%d-%d)!", min, max);
 					System.out.println();
 				} else {
+
 					return option;
 				}
 			} catch (InputMismatchException ex) {
@@ -185,6 +202,7 @@ public class Helper {
 	}
 
 	public void subProductManagementMenu() {
+
 		System.out.println("---------------");
 		System.out.println("1. Update product name.");
 		System.out.println("2. Update product price.");
@@ -193,8 +211,9 @@ public class Helper {
 		System.out.println("4. Back.");
 		System.out.println("---------------");
 	}
-	
+
 	public void subMenu(String name) {
+
 		System.out.println("---------------");
 		System.out.println("1. List " + name + ".");
 		System.out.println("2. Add " + name + ".");
@@ -205,6 +224,7 @@ public class Helper {
 	}
 
 	public void mainMenu() {
+
 		System.out.println("---------------------------------------");
 		System.out.println("1. Quan ly Category.");
 		System.out.println("2. Quan ly Product.");

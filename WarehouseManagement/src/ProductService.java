@@ -9,25 +9,9 @@ public class ProductService {
 	}
 
 	public Product add(String name, float price, int quantity, int categoryId) {
-//		productList = categoryService.getByName(categoryName).getProductList();
-//		int productId = 0;
-//
-//		if (productList.size() == 0) {
-//			productId = 1;
-//		} else {
-//			productId = productList.get(productList.size() - 1).getProductId() + 1;
-//		}
-//		try {
-//			Product product = new Product(categoryService.getByName(categoryName).getCategoryId(), categoryName, productId, name, price, quantity);
-//			productList.add(product);
-//			categoryService.getByName(categoryName).setProductList(productList);
-//
-//			return true;
-//		} catch (Exception e) {
-//			return false;
-//		}
+
 		int productId = 0;
-		
+
 		if (productList.size() == 0) {
 			productId = 1;
 		} else {
@@ -44,6 +28,7 @@ public class ProductService {
 	}
 
 	public boolean update(Product productUpdate) {
+
 		int id = productUpdate.getProductId();
 		String name = productUpdate.getProductName();
 		float price = productUpdate.getProductPrice();
@@ -66,7 +51,7 @@ public class ProductService {
 		}
 		return false;
 	}
-	
+
 //		public boolean moveCategory(CategoryService categoryService, String categoryOld, String categoryNew, String productName) {
 //			productList = categoryService.getByName(categoryOld).getProductList();
 //			List<Product> productListTmp = categoryService.getByName(categoryNew).getProductList();
@@ -104,25 +89,31 @@ public class ProductService {
 //		}
 
 	public Product getByName(String productName) {
+
 		for (int i = 0; i < productList.size(); i++) {
 			if (productList.get(i).getProductName().equalsIgnoreCase(productName)) {
 				return productList.get(i);
 			}
 		}
+
 		return null;
 	}
-	
+
 	public List<Product> getByCategoryId(int categoryId) {
+
 		List<Product> productListTmp = new ArrayList<>();
+
 		for (int i = 0; i < productList.size(); i++) {
 			if (productList.get(i).getCategoryId() == categoryId) {
 				productListTmp.add(productList.get(i));
 			}
 		}
+
 		return productListTmp;
 	}
 
 	public boolean delete(String productNameDelete) {
+
 		try {
 			productList.remove(getByName(productNameDelete));
 

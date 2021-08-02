@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 public class OrderManagement {
 
 	private Helper helper = null;
-	
-	public void orderManagementExecute(CategoryService categoryService, ProductService productService, OrderService orderService) {
+
+	public void orderManagementExecute(CategoryService categoryService, ProductService productService,
+			OrderService orderService) {
 
 		if (helper == null) {
 			helper = new Helper();
@@ -39,12 +40,14 @@ public class OrderManagement {
 				break;
 			case 2:
 				int totalProduct = 0;
+				
 				if (categoryService.getAll().size() == 0) {
 					System.out.println("There is no Category exsit. Please add a Category first!");
 				} else {
 					for (Category category : categoryService.getAll()) {
 						totalProduct += productService.getByCategoryId(category.getCategoryId()).size();
 					}
+					
 					if (totalProduct == 0) {
 						System.out.println("There is no Product to Order!");
 					} else {
@@ -57,11 +60,12 @@ public class OrderManagement {
 						int currentQuantity;
 						boolean checkInputProduct = true;
 						boolean checkProductQuantity = true;
+						
 						do {
 							String categoryName = helper.inputCategoryName(categoryService.getAll(), 1, 2);
 							Category category = categoryService.getByName(categoryName);
-							productName = helper.inputProductName(productService.getByCategoryId(category.getCategoryId()), 1,
-									0);
+							productName = helper
+									.inputProductName(productService.getByCategoryId(category.getCategoryId()), 1, 0);
 							currentQuantity = productService.getByName(productName).getProductQuantity();
 							if (currentQuantity == 0) {
 								System.out.println("Product out of stock!");
@@ -168,8 +172,8 @@ public class OrderManagement {
 							orderNameOld = helper.inputOrderName(orderService.getAll(), 1, 0);
 							String categoryNameAdd = helper.inputCategoryName(categoryService.getAll(), 1, 0);
 							Category category = categoryService.getByName(categoryNameAdd);
-							String productNameAdd = helper.inputProductName(
-									productService.getByCategoryId(category.getCategoryId()), 1, 0);
+							String productNameAdd = helper
+									.inputProductName(productService.getByCategoryId(category.getCategoryId()), 1, 0);
 							boolean isExistProduct = false;
 							for (Product product : orderService.getByName(orderNameOld).getProductList()) {
 								if (product.getProductName().equalsIgnoreCase(productNameAdd)) {
@@ -219,8 +223,8 @@ public class OrderManagement {
 							order.getProductList().forEach(System.out::println);
 							System.out.println("********************************************************");
 
-							String productNameUpdate = helper.inputProductName(
-									orderService.getByName(orderNameOld).getProductList(), 1, 0);
+							String productNameUpdate = helper
+									.inputProductName(orderService.getByName(orderNameOld).getProductList(), 1, 0);
 							Product productTmp = orderService.getOrderProductByName(orderNameOld, productNameUpdate);
 							int stockProductQuantity = productService.getByName(productNameUpdate).getProductQuantity();
 							int orderProductQuantity = productTmp.getProductQuantity();
@@ -266,11 +270,9 @@ public class OrderManagement {
 			}
 		} while (checkOption);
 	}
-	
+
 	public List<Product> top10BestSellerProduct(OrderService orderService) {
-		if (orderService == null) {
-			orderService = new OrderService();
-		}
+
 		List<Product> productTmp = new ArrayList<>();
 		List<Product> matchingProductRaw = new ArrayList<>();
 		List<Product> matchingProduct = new ArrayList<>();
@@ -294,6 +296,11 @@ public class OrderManagement {
 					Product productAdd = new Product(product.getProductId(), product.getProductName(),
 							product.getProductPrice(), totalProductQuantity, product.getCategoryId());
 					productList.add(productAdd);
+					int productListSize = productList.size();
+					if (productListSize == 10) {
+						return productList.stream().sorted(Comparator.comparing(Product::getProductQuantity).reversed())
+								.collect(Collectors.toList());
+					}
 				}
 			}
 			return productList.stream().sorted(Comparator.comparing(Product::getProductQuantity).reversed())

@@ -3,11 +3,9 @@ import java.util.List;
 public class CategoryManagement {
 
 	private Helper helper = null;
-	
+
 	public void totalProductOfCategory(CategoryService categoryService, ProductService productService) {
-		if (categoryService == null) {
-			categoryService = new CategoryService();
-		}
+
 		if (categoryService.getAll().size() == 0) {
 			System.out.println("There is no Category!");
 		} else {
@@ -19,14 +17,9 @@ public class CategoryManagement {
 			}
 		}
 	}
-	
+
 	public void categoryManagementExecute(CategoryService categoryService, ProductService productService) {
-		if (categoryService == null) {
-			categoryService = new CategoryService();
-		}
-		if (productService == null) {
-			productService = new ProductService();
-		}
+
 		if (helper == null) {
 			helper = new Helper();
 		}

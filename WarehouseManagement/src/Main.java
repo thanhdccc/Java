@@ -1,7 +1,7 @@
 import java.util.List;
 
 public class Main {
-	
+
 	private static Helper helper = null;
 	private static CategoryManagement categoryHelper = null;
 	private static ProductManagement productHelper = null;
@@ -11,7 +11,7 @@ public class Main {
 	private static OrderService orderService = null;
 
 	public static void main(String[] args) {
-		
+
 		if (helper == null) {
 			helper = new Helper();
 		}

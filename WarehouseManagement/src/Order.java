@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
-	
+
 	private int orderId;
 	private String orderName;
 	private List<Product> productList;
 	private float totalPrice;
-	
+
 	public Order() {
 		productList = new ArrayList<>();
 	}

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.List;
 
 public class Main {
@@ -55,26 +56,38 @@ public class Main {
 			
 			if (!file.exists()) {
 				file.createNewFile();
+				
+				Warehouse warehouse = new Warehouse();
+				warehouse.setCategoryList(categoryService.getAll());
+				warehouse.setProductList(productService.getAll());
+				warehouse.setOrderList(orderService.getAll());
+				
+				FileOutputStream dataFile = new FileOutputStream(file);
+				ObjectOutputStream outputStream = new ObjectOutputStream(dataFile);
+				
+				outputStream.writeObject(warehouse);
+				
+				outputStream.close();
+				dataFile.close();
+				
 			} else {
-				boolean result = file.delete();
-				if (result) {
-					file.createNewFile();
-				}
+				PrintWriter writer = new PrintWriter(file);
+				writer.print("");
+				writer.close();
+				
+				Warehouse warehouse = new Warehouse();
+				warehouse.setCategoryList(categoryService.getAll());
+				warehouse.setProductList(productService.getAll());
+				warehouse.setOrderList(orderService.getAll());
+				
+				FileOutputStream dataFile = new FileOutputStream(file);
+				ObjectOutputStream outputStream = new ObjectOutputStream(dataFile);
+				
+				outputStream.writeObject(warehouse);
+				
+				outputStream.close();
+				dataFile.close();
 			}
-			
-			Warehouse warehouse = new Warehouse();
-			warehouse.setCategoryList(categoryService.getAll());
-			warehouse.setProductList(productService.getAll());
-			warehouse.setOrderList(orderService.getAll());
-			
-			FileOutputStream dataFile = new FileOutputStream(file);
-			ObjectOutputStream outputStream = new ObjectOutputStream(dataFile);
-			
-			outputStream.writeObject(warehouse);
-			
-			outputStream.close();
-			dataFile.close();
-			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

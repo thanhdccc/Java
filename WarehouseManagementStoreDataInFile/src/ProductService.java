@@ -4,6 +4,10 @@ import java.util.List;
 public class ProductService {
 	private List<Product> productList = new ArrayList<>();
 
+	public void setProductList(List<Product> productList) {
+		this.productList = productList;
+	}
+
 	public List<Product> getAll() {
 		return productList;
 	}

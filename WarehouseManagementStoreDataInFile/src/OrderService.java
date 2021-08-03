@@ -5,6 +5,10 @@ public class OrderService {
 
 	private List<Order> orderList = new ArrayList<>();
 
+	public void setOrderList(List<Order> orderList) {
+		this.orderList = orderList;
+	}
+
 	public List<Order> getAll() {
 		return orderList;
 	}

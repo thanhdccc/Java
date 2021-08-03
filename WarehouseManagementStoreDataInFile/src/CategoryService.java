@@ -5,6 +5,10 @@ public class CategoryService {
 
 	private List<Category> categoryList = new ArrayList<>();
 
+	public void setCategoryList(List<Category> categoryList) {
+		this.categoryList = categoryList;
+	}
+
 	public List<Category> getAll() {
 		return categoryList;
 	}

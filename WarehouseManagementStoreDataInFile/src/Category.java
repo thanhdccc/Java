@@ -1,6 +1,12 @@
+import java.io.Serializable;
 
-public class Category {
+public class Category implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 735803346619188274L;
+	
 	private int categoryId;
 	private String categoryName;
 

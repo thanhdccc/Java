@@ -1,3 +1,4 @@
+package com.fabbi.entity;
 
 public class Category {
 

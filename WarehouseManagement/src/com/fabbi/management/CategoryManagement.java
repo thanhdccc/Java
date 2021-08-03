@@ -1,4 +1,10 @@
+package com.fabbi.management;
 import java.util.List;
+
+import com.fabbi.entity.Category;
+import com.fabbi.service.CategoryService;
+import com.fabbi.service.ProductService;
+import com.fabbi.util.Helper;
 
 public class CategoryManagement {
 

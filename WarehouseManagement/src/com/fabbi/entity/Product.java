@@ -1,11 +1,6 @@
-import java.io.Serializable;
+package com.fabbi.entity;
 
-public class Product implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2829115848223660218L;
+public class Product{
 	
 	private int productId;
 	private String productName;

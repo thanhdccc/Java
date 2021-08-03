@@ -1,8 +1,13 @@
+package com.fabbi.util;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import com.fabbi.entity.Category;
+import com.fabbi.entity.Order;
+import com.fabbi.entity.Product;
 
 public class Helper {
 

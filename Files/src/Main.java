@@ -2,7 +2,6 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
 	public static final String MAIN_FOLDER_NAME = "documents";
@@ -19,25 +18,11 @@ public class Main {
 			if (mainFolder.mkdir()) {
 				String tmp = mainFolder.getAbsolutePath() + "\\";
 				ExecutorService pool = Executors.newFixedThreadPool(10);
-				pool.execute(new Thread(new CreateSubFolder(tmp, 1)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 2)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 3)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 4)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 5)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 6)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 7)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 8)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 9)));
-				pool.execute(new Thread(new CreateSubFolder(tmp, 10)));
-				pool.shutdown();
-				try {
-					if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-						pool.shutdownNow();
-					}
-				} catch (InterruptedException ex) {
-					pool.shutdownNow();
-					Thread.currentThread().interrupt();
+				for (int i = 1; i <= 10; i++) {
+					pool.execute(new Thread(new CreateSubFolder(tmp, i)));
 				}
+				pool.shutdown();
+
 				System.out.println("Done!");
 			} else {
 				System.out.println("Create Failed!");

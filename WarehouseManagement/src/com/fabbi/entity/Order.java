@@ -1,15 +1,9 @@
-
-import java.io.Serializable;
+package com.fabbi.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Order implements Serializable {
+public class Order {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4755876560391819747L;
-	
 	private int orderId;
 	private String orderName;
 	private List<Product> productList;

@@ -1,12 +1,15 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.List;
+
+import com.fabbi.entity.Product;
+import com.fabbi.entity.Warehouse;
+import com.fabbi.management.CategoryManagement;
+import com.fabbi.management.OrderManagement;
+import com.fabbi.management.ProductManagement;
+import com.fabbi.service.CategoryService;
+import com.fabbi.service.OrderService;
+import com.fabbi.service.ProductService;
+import com.fabbi.service.WarehouseService;
+import com.fabbi.util.Helper;
 
 public class Main {
 
@@ -17,88 +20,15 @@ public class Main {
 	private static CategoryService categoryService = null;
 	private static ProductService productService = null;
 	private static OrderService orderService = null;
-	private static final String DATA_FILE = "Data.txt";
-	
-	private static Warehouse readDataFromFile() {
-		File file = new File(DATA_FILE);
-		Warehouse warehouse = new Warehouse();
-		
-		if(file.exists()) {
-			try {
-				FileInputStream dataFile = new FileInputStream(file);
-				ObjectInputStream inputStream = new ObjectInputStream(dataFile);
-				
-				warehouse = (Warehouse) inputStream.readObject();
-				
-				inputStream.close();
-				dataFile.close();
-				
-				return warehouse;
-				
-			} catch (FileNotFoundException e) {
-				System.out.println("Error: " + e);
-				return null;
-			} catch (IOException e) {
-				System.out.println("Error: " + e);
-				return null;
-			} catch (ClassNotFoundException e) {
-				System.out.println("Error: " + e);
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}
-	
-	private static void writeDataToFile() {
-		try {
-			File file = new File(DATA_FILE);
-			
-			if (!file.exists()) {
-				file.createNewFile();
-				
-				Warehouse warehouse = new Warehouse();
-				warehouse.setCategoryList(categoryService.getAll());
-				warehouse.setProductList(productService.getAll());
-				warehouse.setOrderList(orderService.getAll());
-				
-				FileOutputStream dataFile = new FileOutputStream(file);
-				ObjectOutputStream outputStream = new ObjectOutputStream(dataFile);
-				
-				outputStream.writeObject(warehouse);
-				
-				outputStream.close();
-				dataFile.close();
-				
-			} else {
-				PrintWriter writer = new PrintWriter(file);
-				writer.print("");
-				writer.close();
-				
-				Warehouse warehouse = new Warehouse();
-				warehouse.setCategoryList(categoryService.getAll());
-				warehouse.setProductList(productService.getAll());
-				warehouse.setOrderList(orderService.getAll());
-				
-				FileOutputStream dataFile = new FileOutputStream(file);
-				ObjectOutputStream outputStream = new ObjectOutputStream(dataFile);
-				
-				outputStream.writeObject(warehouse);
-				
-				outputStream.close();
-				dataFile.close();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	private static WarehouseService warehouseService = null;
 
 	public static void main(String[] args) {
+		if (warehouseService == null) {
+			warehouseService = new WarehouseService();
+		}
 		
 		Warehouse warehouse = null;
-		warehouse = readDataFromFile();
+		warehouse = warehouseService.readData();
 		
 		if (warehouse == null) {
 			System.out.println("No data to load!");
@@ -169,7 +99,7 @@ public class Main {
 					}
 					break;
 				case 6:
-					writeDataToFile();
+					warehouseService.writeData(categoryService, productService, orderService);
 					checkOption = false;
 					break;
 				}
@@ -244,7 +174,7 @@ public class Main {
 					}
 					break;
 				case 6:
-					writeDataToFile();
+					warehouseService.writeData(categoryService, productService, orderService);
 					checkOption = false;
 					break;
 				}

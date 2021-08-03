@@ -1,5 +1,8 @@
+package com.fabbi.service;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fabbi.entity.Product;
 
 public class ProductService {
 	private List<Product> productList = new ArrayList<>();

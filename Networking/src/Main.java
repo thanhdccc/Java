@@ -1,18 +1,31 @@
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 public class Main {
 
 	private static HttpURLConnection connection;
 	private static final String ACCESS_TOKEN = "c95459da3486560532f841cc0388959d776573616d04b52409f76fc87cf61e68";
+	private static final String WEB_URL = "https://vnexpress.net/ba-giai-phap-go-un-tac-hang-hoa-tai-cang-cat-lai-4334237.html";
 	
 	private static void create() {
 		try {
@@ -217,7 +230,58 @@ public class Main {
 			scanner.nextLine();
 		} while (true);
 	}
+	
+	private static List<String> getAllImgUrl(String fileName) {
+		try {
+			File input = new File(fileName);
+			
+			Document doc = Jsoup.parse(input, "UTF-8");
+			List<String> imgUrlList = new ArrayList<>();
+//			Elements element = doc.getElementsByTag("img");
+//			
+//			for (int i = 0; i < element.size(); i++) {
+//				String url = element.get(i).absUrl("src");
+//				if (url.equals("")) {
+//					continue;
+//				} else {
+//					imgUrlList.add(url);
+//				}
+//			}
+			
+			Elements element1 = doc.getElementsByTag("meta");
+			
+			for (int i = 0; i < element1.size(); i++) {
+				String url = element1.get(i).absUrl("content");
+				if (url.equals("")) {
+					continue;
+				} else {
+					imgUrlList.add(url);
+				}
+			}
+			
+			return imgUrlList;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
+	private static void saveImage(String imageUrl, String destinationFile) throws IOException {
+	    URL url = new URL(imageUrl);
+	    InputStream is = url.openStream();
+	    OutputStream os = new FileOutputStream(destinationFile);
+
+	    byte[] b = new byte[2048];
+	    int length;
+
+	    while ((length = is.read(b)) != -1) {
+	        os.write(b, 0, length);
+	    }
+
+	    is.close();
+	    os.close();
+	}
+	
 	public static void main(String[] args) {
 
 		int option = 0;
@@ -263,6 +327,51 @@ public class Main {
 				} while (checkOptionCase1);
 				break;
 			case 2:
+				String filePath = "data.html";
+				 
+				URL urlObj;
+				try {
+					urlObj = new URL(WEB_URL);
+					URLConnection urlCon = urlObj.openConnection();
+					 
+					InputStream inputStream = urlCon.getInputStream();
+					BufferedInputStream reader = new BufferedInputStream(inputStream);
+					 
+					BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(filePath));
+					 
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+					
+					while ((bytesRead = reader.read(buffer)) != -1) {
+					    writer.write(buffer, 0, bytesRead);
+					}
+					
+					writer.close();
+					reader.close();
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				List<String> imgListTmp = getAllImgUrl(filePath);
+				List<String> imgList = new ArrayList<>();
+				for (int i = 0; i < imgListTmp.size(); i++) {
+					if (imgListTmp.get(i).contains(".jpg")) {
+						imgList.add(imgListTmp.get(i));
+					}
+				}
+				
+				for (int i = 0; i < imgList.size(); i++) {
+					String tmp = i + ".jpg";
+					try {
+						saveImage(imgList.get(i), tmp);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				System.out.println("Done");
 				break;
 			case 3:
 				checkOption = false;

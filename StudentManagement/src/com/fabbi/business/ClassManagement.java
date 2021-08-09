@@ -1,6 +1,8 @@
 package com.fabbi.business;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fabbi.service.ClassService;
 import com.fabbi.service.StudentService;
@@ -11,10 +13,36 @@ import com.fabbi.entity.Student;
 public class ClassManagement {
 
 	private Helper helper = null;
-	
-	public void statisticByGender(StudentService studentService) {
+
+	public void statisticByGender(StudentService studentService, ClassService classService) {
+		List<Class> classList = classService.getAll();
 		List<Student> studentListMale = studentService.getStudentListByGender("nam");
 		List<Student> studentListFemale = studentService.getStudentListByGender("nu");
+
+		List<Class> statisticList = new ArrayList<>();
+		List<Student> studentListMaleByClassId = null;
+		List<Student> studentListFemaleByClassId = null;
+
+		for (Class classObj : classList) {
+			studentListMaleByClassId = new ArrayList<>();
+			studentListFemaleByClassId = new ArrayList<>();
+			studentListMaleByClassId = studentListMale.stream().filter(s -> s.getClassId() == classObj.getId())
+					.collect(Collectors.toList());
+
+			studentListFemaleByClassId = studentListFemale.stream().filter(s -> s.getClassId() == classObj.getId())
+					.collect(Collectors.toList());
+
+			int totalMale = studentListMaleByClassId.size();
+			int totalFemale = studentListFemaleByClassId.size();
+			Class classTmp = new Class(classObj.getId(), classObj.getName(), totalMale, totalFemale);
+			statisticList.add(classTmp);
+		}
+
+		for (Class classObj : statisticList) {
+			System.out.printf("ID lop: %d - Ten lop: %s - Hoc sinh nam: %d - Hoc sinh nu: %d", classObj.getId(),
+					classObj.getName(), classObj.getTotalMale(), classObj.getTotalFemale());
+			System.out.println();
+		}
 	}
 
 	public void sortByStudentQuantity(ClassService classService) {
@@ -24,7 +52,7 @@ public class ClassManagement {
 			System.out.println("Khong co lop hoc nao!");
 		} else {
 			for (Class classTmp : classList) {
-				System.out.printf("Class ID: %d - Class Name: %s - Total Student: %d", classTmp.getId(),
+				System.out.printf("ID lop: %d - Ten lop: %s - Tong so hoc sinh: %d", classTmp.getId(),
 						classTmp.getName(), classTmp.getTotalStudent());
 				System.out.println();
 			}

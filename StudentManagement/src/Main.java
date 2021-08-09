@@ -61,6 +61,7 @@ public class Main {
 				classHelper.sortByStudentQuantity(classService);
 				break;
 			case 8:
+				classHelper.statisticByGender(studentService, classService);
 				break;
 			case 9:
 				checkOption = false;

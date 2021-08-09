@@ -105,9 +105,9 @@ public class Student {
 
 	public String toString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return "Student ID: " + id + " - Rollnumber: " + rollnumber + " - Name: " + name + 
-				" - Birth Date: " + dateFormat.format(dob) + " - Gender: " + gender + 
-				" - Address: " + address + " - Hobby: " + hobby + 
-				" - Class ID: " + classId;
+		return "ID hoc sinh: " + id + " - Ma so: " + rollnumber + " - Ten: " + name + 
+				" - Ngay sinh: " + dateFormat.format(dob) + " - Gioi tinh: " + gender + 
+				" - Dia chi: " + address + " - So thich: " + hobby + 
+				" - ID lop: " + classId;
 	}
 }

@@ -5,6 +5,8 @@ public class Class {
 	private int id;
 	private String name;
 	private int totalStudent;
+	private int totalMale;
+	private int totalFemale;
 	
 	public Class() {
 		
@@ -18,6 +20,13 @@ public class Class {
 		this.id = id;
 		this.name = name;
 		this.totalStudent = totalStudent;
+	}
+	
+	public Class(int id, String name, int totalMale, int totalFemale) {
+		this.id = id;
+		this.name = name;
+		this.totalMale = totalMale;
+		this.totalFemale = totalFemale;
 	}
 	
 	public int getId() {
@@ -44,7 +53,23 @@ public class Class {
 		this.totalStudent = totalStudent;
 	}
 	
+	public int getTotalMale() {
+		return totalMale;
+	}
+	
+	public void setTotalMale(int totalMale) {
+		this.totalMale = totalMale;
+	}
+	
+	public int getTotalFemale() {
+		return totalFemale;
+	}
+	
+	public void setTotalFemale(int totalFemale) {
+		this.totalFemale = totalFemale;
+	}
+	
 	public String toString() {
-		return String.format("Class ID: %d - Class Name: %s", id, name);
+		return String.format("ID lop: %d - Ten lop: %s", id, name);
 	}
 }

@@ -1,8 +1,4 @@
 package com.fabbi.management;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,23 +6,48 @@ import java.util.stream.Collectors;
 import com.fabbi.entity.Category;
 import com.fabbi.entity.Order;
 import com.fabbi.entity.Product;
-import com.fabbi.service.CategoryService;
-import com.fabbi.service.OrderService;
-import com.fabbi.service.ProductService;
-import com.fabbi.util.DBUtil;
+import com.fabbi.service.CategoryServiceImpl;
+import com.fabbi.service.OrderServiceImpl;
+import com.fabbi.service.ProductServiceImpl;
 import com.fabbi.util.Helper;
 
 public class OrderManagement {
 
 	private Helper helper = null;
-	private DBUtil dbUtil = null;
-
-	public void orderManagementExecute(CategoryService categoryService, ProductService productService,
-			OrderService orderService) {
-
-		if (helper == null) {
-			helper = new Helper();
+	private static OrderManagement instance;
+	
+	private OrderManagement() {
+		
+	}
+	
+	public static OrderManagement getInstance() {
+		if (instance == null) {
+			instance = new OrderManagement();
 		}
+		return instance;
+	}
+	
+	public void getTop10BestSoldProduct(OrderServiceImpl orderService) {
+		
+		List<Product> productList = orderService.top10BestSellerProduct();
+		if (productList != null) {
+			System.out.println("****** Top 10 best seller products ******");
+			int count = 1;
+			for (Product product : productList) {
+				System.out.printf("Top %d -> Product ID: %d - Product Name: %s - Sold Quantity: %d", 
+						count, product.getProductId(), product.getProductName(), product.getProductQuantity());
+				System.out.println();
+				count++;
+			}
+		} else {
+			System.out.println("Order list empty!");
+		}
+	}
+
+	public void orderManagementExecute(CategoryServiceImpl categoryService, ProductServiceImpl productService,
+			OrderServiceImpl orderService) {
+
+		helper = Helper.getInstance();
 		int option = 0;
 		boolean checkOption = true;
 		List<Order> orderList;
@@ -68,7 +89,8 @@ public class OrderManagement {
 						System.out.println("There is no Product to Order!");
 					} else {
 						String orderName = helper.inputOrderName(orderList, 0, 0);
-						boolean resultAddOrder = orderService.addOrder(orderName);
+						Order order = new Order(orderName);
+						boolean resultAddOrder = orderService.add(order);
 						
 						if (!resultAddOrder) {
 							System.out.println("Create order failed!");
@@ -100,7 +122,7 @@ public class OrderManagement {
 								Category categoryTmp = categoryService.getByName(categoryName);
 
 								if (tmpList.size() == 0) {
-									int orderId = orderService.getOrderByName(orderName).getOrderId();
+									int orderId = orderService.getByName(orderName).getOrderId();
 									do {
 										productQuantity = helper.inputProductQuantity(0);
 
@@ -117,7 +139,7 @@ public class OrderManagement {
 											
 											if (result) {
 												productTmp.setProductQuantity(currentQuantity - productQuantity);
-												productService.updateProductQuantity(productTmp);
+												productService.update(productTmp);
 												checkProductQuantity = false;
 											} else {
 												System.out.println("Error.");
@@ -129,7 +151,7 @@ public class OrderManagement {
 										}
 									} while (checkProductQuantity);
 								} else {
-									int orderId = orderService.getOrderByName(orderName).getOrderId();
+									int orderId = orderService.getByName(orderName).getOrderId();
 									do {
 										productQuantity = helper.inputProductQuantity(0);
 
@@ -141,7 +163,7 @@ public class OrderManagement {
 													orderService.updateOrderProductQuantity(product.getProductQuantity(), orderId, product.getProductId());
 													Product productInStock = productService.getByName(productName);
 													productInStock.setProductQuantity(currentQuantity - productQuantity);
-													productService.updateProductQuantity(productInStock);
+													productService.update(productInStock);
 													break;
 												}
 											}
@@ -205,9 +227,9 @@ public class OrderManagement {
 							orderListTmp = orderService.getAll();
 							orderNameOld = helper.inputOrderName(orderListTmp, 1, 0);
 							orderNameNew = helper.inputOrderName(orderListTmp, 0, 1);
-							order = orderService.getOrderByName(orderNameOld);
+							order = orderService.getByName(orderNameOld);
 							order.setOrderName(orderNameNew);
-							resultUpdate = orderService.updateOrderName(order);
+							resultUpdate = orderService.update(order);
 							if (resultUpdate == true) {
 								System.out.println("Update success!");
 							} else {
@@ -221,7 +243,7 @@ public class OrderManagement {
 							Category category = categoryService.getByName(categoryNameAdd);
 							String productNameAdd = helper
 									.inputProductName(productService.getByCategoryId(category.getCategoryId()), 1, 0);
-							Order orderTmp = orderService.getOrderByName(orderNameOld);
+							Order orderTmp = orderService.getByName(orderNameOld);
 							Product productTmp = orderService.getProductByOrderIdAndProductName(orderTmp.getOrderId(), productNameAdd);
 							boolean isExistProduct = false;
 							if (productTmp != null) {
@@ -246,7 +268,7 @@ public class OrderManagement {
 										
 										orderService.addProductToOrder(orderTmp.getOrderId(), productAdd);
 										productTmp.setProductQuantity(quantityChange);
-										productService.updateProductQuantity(productTmp);
+										productService.update(productTmp);
 										
 										List<Product> productListTmp = orderService.getProductListByOrderId(orderTmp.getOrderId());
 										totalPrice += orderService.totalPrice(productListTmp);
@@ -262,7 +284,7 @@ public class OrderManagement {
 						case 3:
 							orderListTmp = orderService.getAll();
 							orderNameOld = helper.inputOrderName(orderListTmp, 1, 0);
-							order = orderService.getOrderByName(orderNameOld);
+							order = orderService.getByName(orderNameOld);
 							int orderId = order.getOrderId();
 							List<Product> productListTmp = orderService.getProductListByOrderId(orderId);
 							float totalPriceChange = 0;
@@ -290,7 +312,7 @@ public class OrderManagement {
 								
 								productTmp = productService.getByName(productNameUpdate);
 								productTmp.setProductQuantity(quantityNew);
-								productService.updateProductQuantity(productTmp);
+								productService.update(productTmp);
 
 								System.out.println("Update success!");
 							} else {
@@ -310,14 +332,14 @@ public class OrderManagement {
 					System.out.println("There is no order to Delete");
 				} else {
 					String orderNameDelete = helper.inputOrderName(orderListTmp, 1, 0);
-					Order orderTmp = orderService.getOrderByName(orderNameDelete);
+					Order orderTmp = orderService.getByName(orderNameDelete);
 					int id = orderTmp.getOrderId();
 					
 					boolean resultDeleteProduct = orderService.deleteProductInOrder(id);
 					boolean resultDelete = false;
 					
 					if (resultDeleteProduct) {
-						resultDelete = orderService.deleteOrder(orderNameDelete);
+						resultDelete = orderService.delete(orderTmp);
 						
 						if (resultDelete) {
 							System.out.println("Delete success!");
@@ -334,45 +356,5 @@ public class OrderManagement {
 				break;
 			}
 		} while (checkOption);
-	}
-
-	public List<Product> top10BestSellerProduct(OrderService orderService) {
-
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-		
-		Connection con = null;
-		String sql = null;
-		List<Product> productList = new ArrayList<>();
-		
-		try {
-			con = dbUtil.getConnection();
-			sql = "select sum(a.product_quantity) as total_quantity, a.product_id, b.product_name "
-					+ "from product_order as a inner join products as b on a.product_id = b.product_id "
-					+ "group by a.product_id, b.product_name order by total_quantity desc limit 10";
-			
-			Statement statement = con.createStatement();
-			ResultSet result = statement.executeQuery(sql);
-			
-			while (result.next()) {
-				int quantity = result.getInt(1);
-				int id = result.getInt(2);
-				String name = result.getString(3);
-				
-				Product product = new Product(id, name, quantity);
-				productList.add(product);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return productList;
 	}
 }

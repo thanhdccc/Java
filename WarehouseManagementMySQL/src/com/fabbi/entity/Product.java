@@ -23,6 +23,13 @@ public class Product{
 		this.productQuantity = productQuantity;
 	}
 	
+	public Product(String productName, float productPrice, int productQuantity, int categoryId) {
+		this.productName = productName;
+		this.productPrice = productPrice;
+		this.productQuantity = productQuantity;
+		this.categoryId = categoryId;
+	}
+	
 	public Product(int productId, String productName, float productPrice, int productQuantity, int categoryId) {
 		this.productId = productId;
 		this.productName = productName;

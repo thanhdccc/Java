@@ -18,6 +18,10 @@ public class Order {
 		this.orderName = orderName;
 		this.totalPrice = totalPrice;
 	}
+	
+	public Order(String orderName) {
+		this.orderName = orderName;
+	}
 
 	public Order(int orderId, String orderName, float totalPrice, List<Product> productList) {
 		this.orderId = orderId;

@@ -10,6 +10,18 @@ import com.fabbi.entity.Order;
 import com.fabbi.entity.Product;
 
 public class Helper {
+	
+	private static Helper instance;
+
+	private Helper() {
+	}
+	
+	public static Helper getInstance() {
+		if(instance == null) {
+			instance = new Helper();
+		}
+		return instance;
+	}
 
 	@SuppressWarnings("resource")
 	public String inputCategoryName(List<Category> categoryList, int option1, int option2) {
@@ -212,7 +224,6 @@ public class Helper {
 		System.out.println("1. Update product name.");
 		System.out.println("2. Update product price.");
 		System.out.println("3. Update product quantity.");
-//		System.out.println("4. Move category.");
 		System.out.println("4. Back.");
 		System.out.println("---------------");
 	}

@@ -1,65 +1,46 @@
 package com.fabbi.management;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import com.fabbi.entity.Category;
-import com.fabbi.service.CategoryService;
-import com.fabbi.service.ProductService;
-import com.fabbi.util.DBUtil;
+import com.fabbi.entity.CategoryDetail;
+import com.fabbi.entity.Product;
+import com.fabbi.service.CategoryServiceImpl;
+import com.fabbi.service.ProductServiceImpl;
 import com.fabbi.util.Helper;
 
 public class CategoryManagement {
 
 	private Helper helper = null;
-
-	public void totalProductOfCategory() {
-
-		DBUtil dbUtil = new DBUtil();
+	private static  CategoryManagement instance;
+	
+	private CategoryManagement() {
 		
-		Connection con = null;
-		String sql = null;
-		int numberOfProduct = 0;
-		String name = null;
+	}
+	
+	public static CategoryManagement getInstance() {
+		if (instance == null) {
+			instance = new CategoryManagement();
+		}
+		return instance;
+	}
+
+	public void getTotalProduct(CategoryServiceImpl categoryService) {
 		
-		try {
-			con = dbUtil.getConnection();
-			sql = "select count(a.product_id) as number_product, b.category_name from products as a "
-					+ "inner join categories as b on a.category_id = b.category_id "
-					+ "group by b.category_name";
-			
-			Statement statement = con.createStatement();
-			ResultSet result = statement.executeQuery(sql);
-			
-			while (result.next()) {
-				numberOfProduct = result.getInt(1);
-				name = result.getString(2);
-				
-				System.out.printf("Category %s have %d product(s).", name, numberOfProduct);
-				System.out.println();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		List<CategoryDetail> list = categoryService.totalProductOfCategory();
+		if (list.size() == 0) {
+			System.out.println("List of Category is empty!");
+		} else {
+			list.forEach(System.out::println);
 		}
 	}
 
-	public void categoryManagementExecute(CategoryService categoryService, ProductService productService) {
+	public void categoryManagementExecute(CategoryServiceImpl categoryService, ProductServiceImpl productService) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
+		helper = Helper.getInstance();
 		int option = 0;
 		boolean checkOption = true;
 		List<Category> categoryList = null;
+		Category category = null;
 
 		do {
 			System.out.println();
@@ -78,8 +59,11 @@ public class CategoryManagement {
 				}
 				break;
 			case 2:
-				String categoryName = helper.inputCategoryName(categoryService.getAll(), 0, 0);
-				boolean resultAdd = categoryService.add(categoryName);
+				categoryList = categoryService.getAll();
+				
+				String categoryName = helper.inputCategoryName(categoryList, 0, 0);
+				category = new Category(categoryName);
+				boolean resultAdd = categoryService.add(category);
 
 				if (resultAdd) {
 					System.out.println("Add success!");
@@ -95,9 +79,9 @@ public class CategoryManagement {
 				} else {
 					String categoryNameOld = helper.inputCategoryName(categoryList, 1, 0);
 					String categoryNameNew = helper.inputCategoryName(categoryList, 0, 1);
-					Category categoryTmp = categoryService.getByName(categoryNameOld);
-					categoryTmp.setCategoryName(categoryNameNew);
-					boolean resultUpdate = categoryService.update(categoryTmp);
+					category = categoryService.getByName(categoryNameOld);
+					category.setCategoryName(categoryNameNew);
+					boolean resultUpdate = categoryService.update(category);
 
 					if (resultUpdate) {
 						System.out.println("Update success!");
@@ -113,9 +97,11 @@ public class CategoryManagement {
 					System.out.println("There is no Category to delete!");
 				} else {
 					String categoryNameDelete = helper.inputCategoryName(categoryList, 1, 0);
-					Category categoryTmp = categoryService.getByName(categoryNameDelete);
-					if (productService.getByCategoryId(categoryTmp.getCategoryId()).size() == 0) {
-						boolean resultDelete = categoryService.delete(categoryNameDelete);
+					category = categoryService.getByName(categoryNameDelete);
+					List<Product> productList = productService.getByCategoryId(category.getCategoryId());
+					
+					if (productList.size() == 0) {
+						boolean resultDelete = categoryService.delete(category);
 
 						if (resultDelete) {
 							System.out.println("Delete success!");

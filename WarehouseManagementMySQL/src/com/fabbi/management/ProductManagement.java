@@ -4,19 +4,29 @@ import java.util.stream.Collectors;
 
 import com.fabbi.entity.Category;
 import com.fabbi.entity.Product;
-import com.fabbi.service.CategoryService;
-import com.fabbi.service.ProductService;
+import com.fabbi.service.CategoryServiceImpl;
+import com.fabbi.service.ProductServiceImpl;
 import com.fabbi.util.Helper;
 
 public class ProductManagement {
 
 	private Helper helper = null;
-
-	public void productUpdateManagement(String categoryName, String productNameOld, ProductService productService) {
-
-		if (helper == null) {
-			helper = new Helper();
+	private static ProductManagement instance;
+	
+	private ProductManagement() {
+		
+	}
+	
+	public static ProductManagement getInstance() {
+		if (instance == null) {
+			instance = new ProductManagement();
 		}
+		return instance;
+	}
+
+	public void productUpdateManagement(String categoryName, String productNameOld, ProductServiceImpl productService) {
+
+		helper = Helper.getInstance();
 		int option = 0;
 		boolean checkOption = true;
 		String productNameNew = null;
@@ -75,11 +85,9 @@ public class ProductManagement {
 		} while (checkOption);
 	}
 
-	public void productManagementExecute(CategoryService categoryService, ProductService productService) {
+	public void productManagementExecute(CategoryServiceImpl categoryService, ProductServiceImpl productService) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
+		helper = Helper.getInstance();
 		int option = 0;
 		boolean checkOption = true;
 		String categoryName;
@@ -125,9 +133,9 @@ public class ProductManagement {
 							.inputProductName(productService.getByCategoryId(categoryTmp.getCategoryId()), 0, 0);
 					float productPrice = helper.inputProductPrice(0);
 					int productQuantity = helper.inputProductQuantity(0);
+					Product product = new Product(productName, productPrice, productQuantity, categoryTmp.getCategoryId());
 
-					boolean resultAdd = productService.add(productName, productPrice, productQuantity,
-							categoryTmp.getCategoryId());
+					boolean resultAdd = productService.add(product);
 
 					if (resultAdd) {
 						System.out.println("Add success!");
@@ -162,7 +170,8 @@ public class ProductManagement {
 					System.out.println();
 				} else {
 					String productNameDelete = helper.inputProductName(productList, 1, 0);
-					boolean resultDelete = productService.delete(productNameDelete);
+					Product product = productService.getByName(productNameDelete);
+					boolean resultDelete = productService.delete(product);
 
 					if (resultDelete) {
 						System.out.println("Delete success!");

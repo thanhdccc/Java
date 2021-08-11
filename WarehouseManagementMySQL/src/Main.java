@@ -1,12 +1,9 @@
-import java.util.List;
-
-import com.fabbi.entity.Product;
 import com.fabbi.management.CategoryManagement;
 import com.fabbi.management.OrderManagement;
 import com.fabbi.management.ProductManagement;
-import com.fabbi.service.CategoryService;
-import com.fabbi.service.OrderService;
-import com.fabbi.service.ProductService;
+import com.fabbi.service.CategoryServiceImpl;
+import com.fabbi.service.OrderServiceImpl;
+import com.fabbi.service.ProductServiceImpl;
 import com.fabbi.util.Helper;
 
 public class Main {
@@ -15,33 +12,22 @@ public class Main {
 	private static CategoryManagement categoryHelper = null;
 	private static ProductManagement productHelper = null;
 	private static OrderManagement orderHelper = null;
-	private static CategoryService categoryService = null;
-	private static ProductService productService = null;
-	private static OrderService orderService = null;
+	private static CategoryServiceImpl categoryService = null;
+	private static ProductServiceImpl productService = null;
+	private static OrderServiceImpl orderService = null;
 
 	public static void main(String[] args) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
-		if (categoryHelper == null) {
-			categoryHelper = new CategoryManagement();
-		}
-		if (productHelper == null) {
-			productHelper = new ProductManagement();
-		}
-		if (orderHelper == null) {
-			orderHelper = new OrderManagement();
-		}
-		if (categoryService == null) {
-			categoryService = new CategoryService();
-		}
-		if (productService == null) {
-			productService = new ProductService();
-		}
-		if (orderService == null) {
-			orderService = new OrderService();
-		}
+		helper = Helper.getInstance();
+		
+		categoryService = CategoryServiceImpl.getInstance();
+		productService = ProductServiceImpl.getInstance();
+		orderService = OrderServiceImpl.getInstance();
+		
+		categoryHelper = CategoryManagement.getInstance();
+		productHelper = ProductManagement.getInstance();
+		orderHelper = OrderManagement.getInstance();
+		
 		int option = 0;
 		boolean checkOption = true;
 
@@ -62,22 +48,10 @@ public class Main {
 				orderHelper.orderManagementExecute(categoryService, productService, orderService);
 				break;
 			case 4:
-				categoryHelper.totalProductOfCategory();
+				categoryHelper.getTotalProduct(categoryService);
 				break;
 			case 5:
-				List<Product> productList = orderHelper.top10BestSellerProduct(orderService);
-				if (productList != null) {
-					System.out.println("****** Top 10 best seller products ******");
-					int count = 1;
-					for (Product product : productList) {
-						System.out.printf("Top %d -> Product ID: %d - Product Name: %s - Sold Quantity: %d", 
-								count, product.getProductId(), product.getProductName(), product.getProductQuantity());
-						System.out.println();
-						count++;
-					}
-				} else {
-					System.out.println("Order list empty!");
-				}
+				orderHelper.getTop10BestSoldProduct(orderService);
 				break;
 			case 6:
 				checkOption = false;

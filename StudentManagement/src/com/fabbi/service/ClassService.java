@@ -14,7 +14,6 @@ import com.fabbi.entity.Class;
 public class ClassService {
 
 	private DBUtil dbUtil = null;
-	private List<Class> classList = new ArrayList<>();
 
 	public List<Class> getAll() {
 
@@ -24,6 +23,7 @@ public class ClassService {
 
 		Connection con = null;
 		String sql = null;
+		List<Class> classList = new ArrayList<>();
 		int id = 0;
 		String name = null;
 		Class classTmp = null;
@@ -248,7 +248,8 @@ public class ClassService {
 			con = dbUtil.getConnection();
 			sql = "select count(a.student_id) as total_student, a.class_id, "
 					+ "b.class_name from students as a inner join classes as b "
-					+ "on a.class_id = b.class_id group by a.class_id, b.class_name " + "order by total_student desc";
+					+ "on a.class_id = b.class_id group by a.class_id, b.class_name "
+					+ "order by total_student desc";
 
 			Statement statement = con.createStatement();
 			ResultSet result = statement.executeQuery(sql);

@@ -1,3 +1,4 @@
+package com.fabbi.app;
 import com.fabbi.management.CategoryManagement;
 import com.fabbi.management.OrderManagement;
 import com.fabbi.management.ProductManagement;

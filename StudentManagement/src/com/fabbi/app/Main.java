@@ -1,3 +1,4 @@
+package com.fabbi.app;
 import com.fabbi.business.ClazzManagement;
 import com.fabbi.business.StudentManagement;
 import com.fabbi.service.ClazzServiceImpl;

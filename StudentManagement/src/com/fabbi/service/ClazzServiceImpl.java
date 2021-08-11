@@ -15,6 +15,11 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 
 	private DBUtil dbUtil = null;
 	private static ClazzServiceImpl instance;
+	private Connection con = null;
+	private Statement statement = null;
+	private PreparedStatement prepareStatement = null;
+	private ResultSet result = null;
+	private String sql = null;
 	
 	private ClazzServiceImpl() {
 		
@@ -30,10 +35,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 	public List<Clazz> getAll() {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		Statement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		List<Clazz> classList = new ArrayList<>();
 		int id = 0;
 		String name = null;
@@ -66,9 +67,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 	public boolean add(Clazz clazz) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
 		boolean result = false;
 		String name = clazz.getName();
 
@@ -76,9 +74,9 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 			con = dbUtil.getConnection();
 
 			sql = "INSERT INTO classes (name) VALUES (?)";
-			statement = con.prepareStatement(sql);
-			statement.setString(1, name);
-			int resultAdd = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, name);
+			int resultAdd = prepareStatement.executeUpdate();
 			if (resultAdd == 1) {
 				result = true;
 			}
@@ -86,7 +84,7 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -94,9 +92,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 	public boolean update(Clazz classUpdate) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
 		boolean result = false;
 		int id = classUpdate.getId();
 		String name = classUpdate.getName();
@@ -105,10 +100,10 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 			con = dbUtil.getConnection();
 			sql = "UPDATE classes SET name = ? WHERE id = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, name);
-			statement.setInt(2, id);
-			int resultUpdate = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, name);
+			prepareStatement.setInt(2, id);
+			int resultUpdate = prepareStatement.executeUpdate();
 			if (resultUpdate == 1) {
 				result = true;
 			}
@@ -116,7 +111,7 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -124,10 +119,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 	public Clazz getByName(String className) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		Clazz classTmp = null;
 		int id = 0;
 		String name = null;
@@ -136,9 +127,9 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name FROM classes WHERE name = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, className);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, className);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -150,7 +141,7 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return classTmp;
 	}
@@ -158,10 +149,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 	public Clazz getById(int classId) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		Clazz classTmp = null;
 		int id = 0;
 		String name = null;
@@ -170,9 +157,9 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name FROM classes WHERE id = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, classId);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, classId);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -184,7 +171,7 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return classTmp;
 	}
@@ -192,9 +179,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 	public boolean delete(Clazz clazz) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
 		boolean result = false;
 		int id = clazz.getId();
 
@@ -202,9 +186,9 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 			con = dbUtil.getConnection();
 			sql = "DELETE FROM classes WHERE id = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, id);
-			int resultDelete = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, id);
+			int resultDelete = prepareStatement.executeUpdate();
 			if (resultDelete == 1) {
 				result = true;
 			}
@@ -212,7 +196,7 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -220,10 +204,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 	public List<ClazzDetail> sortByTotalStudent() {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		Statement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		int id = 0;
 		String name = null;
 		int total = 0;

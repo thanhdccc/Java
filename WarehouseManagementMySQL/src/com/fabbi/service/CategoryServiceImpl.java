@@ -15,6 +15,11 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 
 	private DBUtil dbUtil = null;
 	private static CategoryServiceImpl instance;
+	private Connection con = null;
+	private Statement statement = null;
+	private PreparedStatement prepareStatement = null;
+	private ResultSet result = null;
+	private String sql = null;
 	
 	private CategoryServiceImpl() {
 		
@@ -31,9 +36,6 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 	public boolean add(Category obj) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
 		String categoryName = obj.getCategoryName();
 		boolean result = false;
 		
@@ -41,9 +43,9 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 			con = dbUtil.getConnection();
 			
 			sql = "INSERT INTO categories (name) VALUES (?)";
-			statement = con.prepareStatement(sql);
-			statement.setString(1, categoryName);
-			int resultAdd = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, categoryName);
+			int resultAdd = prepareStatement.executeUpdate();
 			if (resultAdd == 1) {
 				result = true;
 			}
@@ -51,7 +53,7 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -62,19 +64,16 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 		dbUtil = DBUtil.getInstance();
 		int id = obj.getCategoryId();
 		String name = obj.getCategoryName();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
 		boolean result = false;
 		
 		try {
 			con = dbUtil.getConnection();
 			sql = "UPDATE categories SET name = ? WHERE id = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setString(1, name);
-			statement.setInt(2, id);
-			int resultUpdate = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, name);
+			prepareStatement.setInt(2, id);
+			int resultUpdate = prepareStatement.executeUpdate();
 			if (resultUpdate == 1)  {
 				result = true;
 			}
@@ -82,7 +81,7 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -91,9 +90,6 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 	public boolean delete(Category obj) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
 		int id = obj.getCategoryId();
 		boolean result = false;
 		
@@ -101,15 +97,15 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 			con = dbUtil.getConnection();
 			sql = "DELETE FROM categories WHERE id = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, id);
-			statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, id);
+			prepareStatement.executeUpdate();
 			result = true;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -118,10 +114,6 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 	public Category getById(int categoryId) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		Category category = null;
 		int id = 0;
 		String name = null;
@@ -130,9 +122,9 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name FROM categories WHERE id = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, categoryId);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, categoryId);
+			result = prepareStatement.executeQuery();
 			
 			while (result.next()) {
 				id = result.getInt(1);
@@ -144,7 +136,7 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 
 		return category;
@@ -154,10 +146,6 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 	public List<Category> getAll() {
 		
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		Statement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		int id = 0;
 		String name = null;
 		Category category = null;
@@ -190,10 +178,6 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 	public Category getByName(String categoryName) {
 		
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		Category category = null;
 		int id = 0;
 		String name = null;
@@ -202,9 +186,9 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name FROM categories WHERE name = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setString(1, categoryName);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, categoryName);
+			result = prepareStatement.executeQuery();
 			
 			while (result.next()) {
 				id = result.getInt(1);
@@ -216,7 +200,7 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 
 		return category;
@@ -225,10 +209,6 @@ public class CategoryServiceImpl implements CRUDService<Category>{
 	public List<CategoryDetail> totalProductOfCategory() {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		Statement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		int id = 0;
 		int numberOfProduct = 0;
 		String name = null;

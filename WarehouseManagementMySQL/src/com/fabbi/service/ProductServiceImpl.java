@@ -13,6 +13,17 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	
 	private DBUtil dbUtil = null;
 	private static ProductServiceImpl instance;
+	private Connection con = null;
+	private Statement statement = null;
+	private PreparedStatement prepareStatement = null;
+	private ResultSet result = null;
+	private String sql = null;
+	private int id = 0;
+	private String name = null;
+	private float price = 0;
+	private int quantity = 0;
+	private int categoryId = 0;
+	private Product product = null;
 	
 	private ProductServiceImpl() {
 		
@@ -29,16 +40,6 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	public List<Product> getAll() {
 		
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		Statement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String name = null;
-		float price = 0;
-		int quantity = 0;
-		int cate_id = 0;
-		Product product = null;
 		List<Product> productList = new ArrayList<>();
 		
 		try {
@@ -53,9 +54,9 @@ public class ProductServiceImpl implements CRUDService<Product>{
 				name = result.getString(2);
 				price = result.getFloat(3);
 				quantity = result.getInt(4);
-				cate_id = result.getInt(5);
+				categoryId = result.getInt(5);
 				
-				product = new Product(id, name, price, quantity, cate_id);
+				product = new Product(id, name, price, quantity, categoryId);
 				productList.add(product);
 			}
 			
@@ -71,25 +72,22 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	public boolean add(Product product) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
-		String name = product.getProductName();
-		float price = product.getProductPrice();
-		int quantity = product.getProductQuantity();
-		int categoryId = product.getCategoryId();
+		name = product.getProductName();
+		price = product.getProductPrice();
+		quantity = product.getProductQuantity();
+		categoryId = product.getCategoryId();
 		boolean result = false;
 		
 		try {
 			con = dbUtil.getConnection();
 			sql = "INSERT INTO products (name, price, quantity, category_id) VALUES (?, ?, ?, ?)";
 			
-			statement = con.prepareStatement(sql);
-			statement.setString(1, name);
-			statement.setFloat(2, price);
-			statement.setInt(3, quantity);
-			statement.setInt(4, categoryId);
-			int resultAdd = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, name);
+			prepareStatement.setFloat(2, price);
+			prepareStatement.setInt(3, quantity);
+			prepareStatement.setInt(4, categoryId);
+			int resultAdd = prepareStatement.executeUpdate();
 			if (resultAdd == 1) {
 				result = true;
 			}
@@ -97,7 +95,7 @@ public class ProductServiceImpl implements CRUDService<Product>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -106,25 +104,22 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	public boolean update(Product productUpdate) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
-		int id = productUpdate.getProductId();
-		String name = productUpdate.getProductName();
-		float price = productUpdate.getProductPrice();
-		int quantity = productUpdate.getProductQuantity();
+		id = productUpdate.getProductId();
+		name = productUpdate.getProductName();
+		price = productUpdate.getProductPrice();
+		quantity = productUpdate.getProductQuantity();
 		boolean result = false;
 		
 		try {
 			con = dbUtil.getConnection();
 			sql = "UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setString(1, name);
-			statement.setFloat(2, price);
-			statement.setInt(3, quantity);
-			statement.setInt(4, id);
-			int resultUpdate = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, name);
+			prepareStatement.setFloat(2, price);
+			prepareStatement.setInt(3, quantity);
+			prepareStatement.setInt(4, id);
+			int resultUpdate = prepareStatement.executeUpdate();
 			if (resultUpdate == 1) {
 				result = true;
 			}
@@ -132,7 +127,7 @@ public class ProductServiceImpl implements CRUDService<Product>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -141,39 +136,29 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	public Product getByName(String productName) {
 		
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String name = null;
-		float price = 0;
-		int quantity = 0;
-		int cate_id = 0;
-		Product product = null;
 		
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name, price, quantity, category_id FROM products WHERE name = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setString(1, productName);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, productName);
+			result = prepareStatement.executeQuery();
 			
 			while (result.next()) {
 				id = result.getInt(1);
 				name = result.getString(2);
 				price = result.getFloat(3);
 				quantity = result.getInt(4);
-				cate_id = result.getInt(5);
+				categoryId = result.getInt(5);
 			}
 			
-			product = new Product(id, name, price, quantity, cate_id);
+			product = new Product(id, name, price, quantity, categoryId);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, null, statement, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return product;
 	}
@@ -181,41 +166,31 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	public List<Product> getByCategoryId(int categoryId) {
 		
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		List<Product> productListTmp = new ArrayList<>();
-		int id = 0;
-		String name = null;
-		float price = 0;
-		int quantity = 0;
-		int cate_id = 0;
-		Product product = null;
 		
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name, price, quantity, category_id FROM products WHERE category_id = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, categoryId);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, categoryId);
+			result = prepareStatement.executeQuery();
 			
 			while (result.next()) {
 				id = result.getInt(1);
 				name = result.getString(2);
 				price = result.getFloat(3);
 				quantity = result.getInt(4);
-				cate_id = result.getInt(5);
+				categoryId = result.getInt(5);
 				
-				product = new Product(id, name, price, quantity, cate_id);
+				product = new Product(id, name, price, quantity, categoryId);
 				productListTmp.add(product);
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return productListTmp;
 	}
@@ -224,19 +199,16 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	public boolean delete(Product product) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
-		int id = product.getProductId();
+		id = product.getProductId();
 		boolean result = false;
 		
 		try {
 			con = dbUtil.getConnection();
 			sql = "DELETE FROM products WHERE id = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, id);
-			int resultDelete = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, id);
+			int resultDelete = prepareStatement.executeUpdate();
 			if (resultDelete == 1) {
 				result = true;
 			}
@@ -244,7 +216,7 @@ public class ProductServiceImpl implements CRUDService<Product>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -253,34 +225,24 @@ public class ProductServiceImpl implements CRUDService<Product>{
 	public Product getById(int productId) {
 		
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String name = null;
-		float price = 0;
-		int quantity = 0;
-		int cate_id = 0;
-		Product product = null;
 		
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name, price, quantity, category_id FROM products WHERE id = ?";
 			
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, productId);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, productId);
+			result = prepareStatement.executeQuery();
 			
 			while (result.next()) {
 				id = result.getInt(1);
 				name = result.getString(2);
 				price = result.getFloat(3);
 				quantity = result.getInt(4);
-				cate_id = result.getInt(5);
+				categoryId = result.getInt(5);
 			}
 			
-			product = new Product(id, name, price, quantity, cate_id);
+			product = new Product(id, name, price, quantity, categoryId);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

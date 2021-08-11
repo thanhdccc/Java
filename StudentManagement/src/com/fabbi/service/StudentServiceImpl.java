@@ -15,6 +15,20 @@ public class StudentServiceImpl implements CRUDService<Student> {
 
 	private DBUtil dbUtil = null;
 	private static StudentServiceImpl instance;
+	private Connection con = null;
+	private Statement statement = null;
+	private PreparedStatement prepareStatement = null;
+	private ResultSet result = null;
+	private String sql = null;
+	private int id = 0;
+	private String rollnumber = null;
+	private String name = null;
+	private Date dob = null;
+	private String gender = null;
+	private String address = null;
+	private String hobby = null;
+	private int classId = 0;
+	private Student student = null;
 
 	private StudentServiceImpl() {
 
@@ -30,19 +44,6 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public List<Student> getAll() {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		Statement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 		List<Student> studentList = new ArrayList<>();
 
 		try {
@@ -77,29 +78,16 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public List<Student> getByClassId(int idOfClass) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
 		List<Student> studentListTmp = new ArrayList<>();
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, rollnumber, name, dob, gender, address, "
 					+ "hobby, class_id FROM students WHERE class_id = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, idOfClass);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, idOfClass);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -118,7 +106,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return studentListTmp;
 	}
@@ -126,16 +114,13 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public boolean add(Student student) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
-		String rollnumber = student.getRollnumber();
-		String name = student.getName();
-		Date dob = new Date(student.getDob().getTime());
-		String gender = student.getGender();
-		String address = student.getAddress();
-		String hobby = student.getHobby();
-		int classId = student.getClassId();
+		rollnumber = student.getRollnumber();
+		name = student.getName();
+		dob = new Date(student.getDob().getTime());
+		gender = student.getGender();
+		address = student.getAddress();
+		hobby = student.getHobby();
+		classId = student.getClassId();
 		boolean result = false;
 
 		try {
@@ -143,15 +128,15 @@ public class StudentServiceImpl implements CRUDService<Student> {
 			sql = "INSERT INTO students (rollnumber, name, dob, gender, address, "
 					+ "hobby, class_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, rollnumber);
-			statement.setString(2, name);
-			statement.setDate(3, dob);
-			statement.setString(4, gender);
-			statement.setString(5, address);
-			statement.setString(6, hobby);
-			statement.setInt(7, classId);
-			int resultAdd = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, rollnumber);
+			prepareStatement.setString(2, name);
+			prepareStatement.setDate(3, dob);
+			prepareStatement.setString(4, gender);
+			prepareStatement.setString(5, address);
+			prepareStatement.setString(6, hobby);
+			prepareStatement.setInt(7, classId);
+			int resultAdd = prepareStatement.executeUpdate();
 			if (resultAdd == 1) {
 				result = true;
 			}
@@ -159,7 +144,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -167,16 +152,13 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public boolean update(Student student) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
-		int id = student.getId();
-		String name = student.getName();
-		Date dob = new Date(student.getDob().getTime());
-		String gender = student.getGender();
-		String address = student.getAddress();
-		String hobby = student.getHobby();
-		int classId = student.getClassId();
+		id = student.getId();
+		name = student.getName();
+		dob = new Date(student.getDob().getTime());
+		gender = student.getGender();
+		address = student.getAddress();
+		hobby = student.getHobby();
+		classId = student.getClassId();
 		boolean result = false;
 
 		try {
@@ -184,15 +166,15 @@ public class StudentServiceImpl implements CRUDService<Student> {
 			sql = "UPDATE students SET name = ?, dob = ?, gender = ?, "
 					+ "address = ?, hobby = ?, class_id = ? WHERE id = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, name);
-			statement.setDate(2, dob);
-			statement.setString(3, gender);
-			statement.setString(4, address);
-			statement.setString(5, hobby);
-			statement.setInt(6, classId);
-			statement.setInt(7, id);
-			int resultUpdate = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, name);
+			prepareStatement.setDate(2, dob);
+			prepareStatement.setString(3, gender);
+			prepareStatement.setString(4, address);
+			prepareStatement.setString(5, hobby);
+			prepareStatement.setInt(6, classId);
+			prepareStatement.setInt(7, id);
+			int resultUpdate = prepareStatement.executeUpdate();
 			if (resultUpdate == 1) {
 				result = true;
 			}
@@ -200,7 +182,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -208,26 +190,14 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public Student getByRollnumber(String rollnumber) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, name, dob, gender, address, hobby, class_id FROM students WHERE rollnumber = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, rollnumber);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, rollnumber);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -244,7 +214,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return student;
 	}
@@ -252,19 +222,6 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public List<Student> getListStudentByName(String studentName) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 		List<Student> studentList = new ArrayList<>();
 
 		try {
@@ -272,9 +229,9 @@ public class StudentServiceImpl implements CRUDService<Student> {
 			sql = "SELECT id, rollnumber, name, dob, gender, address, "
 					+ "hobby, class_id FROM students WHERE name LIKE ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, "%" + studentName + "%");
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, "%" + studentName + "%");
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -293,7 +250,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, null, statement, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return studentList;
 	}
@@ -301,28 +258,15 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public List<Student> getByDOB(Date date) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 		List<Student> studentList = new ArrayList<>();
 
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, rollnumber, name, dob, gender, address, hobby, class_id FROM students WHERE dob = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setDate(1, date);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setDate(1, date);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -341,7 +285,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return studentList;
 	}
@@ -349,19 +293,6 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public List<Student> getByYear(int year) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 		List<Student> studentList = new ArrayList<>();
 
 		try {
@@ -369,9 +300,9 @@ public class StudentServiceImpl implements CRUDService<Student> {
 			sql = "SELECT id, rollnumber, name, dob, gender, address, "
 					+ "hobby, class_id FROM students WHERE YEAR(dob) = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, year);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, year);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -390,7 +321,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return studentList;
 	}
@@ -398,19 +329,6 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public List<Student> getStudentListSortByName() {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		Statement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 		List<Student> studentList = new ArrayList<>();
 
 		try {
@@ -445,19 +363,6 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public List<Student> getStudentListByGender(String genderSearch) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 		List<Student> studentList = new ArrayList<>();
 
 		try {
@@ -465,9 +370,9 @@ public class StudentServiceImpl implements CRUDService<Student> {
 			sql = "SELECT id, rollnumber, name, dob, gender, "
 					+ "address, hobby, class_id FROM students WHERE gender = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, genderSearch);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, genderSearch);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -486,7 +391,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return studentList;
 	}
@@ -494,19 +399,16 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public boolean delete(Student student) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		String sql = null;
 		boolean result = false;
-		int id = student.getId();
+		id = student.getId();
 
 		try {
 			con = dbUtil.getConnection();
 			sql = "DELETE FROM students WHERE id = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, id);
-			int resultDelete = statement.executeUpdate();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, id);
+			int resultDelete = prepareStatement.executeUpdate();
 			if (resultDelete == 1) {
 				result = true;
 			}
@@ -514,7 +416,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, null);
+			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -523,27 +425,14 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public Student getById(int studentId) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, rollnumber, name, dob, gender, address, hobby, class_id FROM students WHERE id = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setInt(1, studentId);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setInt(1, studentId);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -561,7 +450,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return student;
 	}
@@ -570,28 +459,15 @@ public class StudentServiceImpl implements CRUDService<Student> {
 	public Student getByName(String studentName) {
 
 		dbUtil = DBUtil.getInstance();
-		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		String sql = null;
-		int id = 0;
-		String rollnumber = null;
-		String name = null;
-		Date dob = null;
-		String gender = null;
-		String address = null;
-		String hobby = null;
-		int classId = 0;
-		Student student = null;
 
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, rollnumber, name, dob, gender, address, "
 					+ "hobby, class_id FROM students WHERE name = ?";
 
-			statement = con.prepareStatement(sql);
-			statement.setString(1, studentName);
-			result = statement.executeQuery();
+			prepareStatement = con.prepareStatement(sql);
+			prepareStatement.setString(1, studentName);
+			result = prepareStatement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -609,7 +485,7 @@ public class StudentServiceImpl implements CRUDService<Student> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			dbUtil.closeConnection(con, statement, null, result);
+			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return student;
 	}

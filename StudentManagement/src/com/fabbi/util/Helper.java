@@ -10,13 +10,25 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.fabbi.entity.Class;
+import com.fabbi.entity.Clazz;
 import com.fabbi.entity.Student;
 
 public class Helper {
 
 	private static final String ROLLNUMBER_PATTERN = "^(HS)\\d{5}$";
 	private static final String DOB_PATTERN = "^\\d{4}[-]\\d{2}[-]\\d{2}$";
+	private static Helper instance;
+	
+	private Helper() {
+		
+	}
+	
+	public static Helper getInstance() {
+		if (instance == null) {
+			instance = new Helper();
+		}
+		return instance;
+	}
 
 	public void mainMenu() {
 
@@ -85,9 +97,9 @@ public class Helper {
 	}
 
 	@SuppressWarnings("resource")
-	public String inputClassName(List<Class> classList, int option1, int option2) {
+	public String inputClassName(List<Clazz> classList, int option1, int option2) {
 
-		List<Class> matchingClass = new ArrayList<>();
+		List<Clazz> matchingClass = new ArrayList<>();
 		Scanner scanner = new Scanner(System.in);
 
 		do {

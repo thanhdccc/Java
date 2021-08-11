@@ -1,34 +1,27 @@
-import com.fabbi.business.ClassManagement;
+import com.fabbi.business.ClazzManagement;
 import com.fabbi.business.StudentManagement;
-import com.fabbi.service.ClassService;
-import com.fabbi.service.StudentService;
+import com.fabbi.service.ClazzServiceImpl;
+import com.fabbi.service.StudentServiceImpl;
 import com.fabbi.util.Helper;
 
 public class Main {
 
 	private static Helper helper = null;
-	private static ClassService classService = null;
-	private static ClassManagement classHelper = null;
-	private static StudentService studentService = null;
+	private static ClazzServiceImpl classService = null;
+	private static ClazzManagement classHelper = null;
+	private static StudentServiceImpl studentService = null;
 	private static StudentManagement studentHelper = null;
 
 	public static void main(String[] args) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
-		if (classHelper == null) {
-			classHelper = new ClassManagement();
-		}
-		if (studentHelper == null) {
-			studentHelper = new StudentManagement();
-		}
-		if (classService == null) {
-			classService = new ClassService();
-		}
-		if (studentService == null) {
-			studentService = new StudentService();
-		}
+		helper = Helper.getInstance();
+		
+		classService = ClazzServiceImpl.getInstance();
+		studentService = StudentServiceImpl.getInstance();
+		
+		classHelper = ClazzManagement.getInstance();
+		studentHelper = StudentManagement.getInstance();
+		
 		int option = 0;
 		boolean checkOption = true;
 

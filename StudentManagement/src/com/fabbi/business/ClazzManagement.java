@@ -4,26 +4,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fabbi.service.ClassService;
-import com.fabbi.service.StudentService;
+import com.fabbi.service.ClazzServiceImpl;
+import com.fabbi.service.StudentServiceImpl;
 import com.fabbi.util.Helper;
-import com.fabbi.entity.Class;
+import com.fabbi.entity.Clazz;
+import com.fabbi.entity.ClazzDetail;
 import com.fabbi.entity.Student;
 
-public class ClassManagement {
+public class ClazzManagement {
 
 	private Helper helper = null;
+	private static ClazzManagement instance;
+	
+	private ClazzManagement() {
+		
+	}
+	
+	public static ClazzManagement getInstance() {
+		if (instance == null) {
+			instance = new ClazzManagement();
+		}
+		return instance;
+	}
 
-	public void statisticByGender(StudentService studentService, ClassService classService) {
-		List<Class> classList = classService.getAll();
+	public void statisticByGender(StudentServiceImpl studentService, ClazzServiceImpl classService) {
+		List<Clazz> classList = classService.getAll();
 		List<Student> studentListMale = studentService.getStudentListByGender("nam");
 		List<Student> studentListFemale = studentService.getStudentListByGender("nu");
 
-		List<Class> statisticList = new ArrayList<>();
+		List<ClazzDetail> statisticList = new ArrayList<>();
 		List<Student> studentListMaleByClassId = null;
 		List<Student> studentListFemaleByClassId = null;
 
-		for (Class classObj : classList) {
+		for (Clazz classObj : classList) {
 			studentListMaleByClassId = new ArrayList<>();
 			studentListFemaleByClassId = new ArrayList<>();
 			studentListMaleByClassId = studentListMale.stream().filter(s -> s.getClassId() == classObj.getId())
@@ -34,24 +47,24 @@ public class ClassManagement {
 
 			int totalMale = studentListMaleByClassId.size();
 			int totalFemale = studentListFemaleByClassId.size();
-			Class classTmp = new Class(classObj.getId(), classObj.getName(), totalMale, totalFemale);
+			ClazzDetail classTmp = new ClazzDetail(classObj.getId(), classObj.getName(), totalMale, totalFemale);
 			statisticList.add(classTmp);
 		}
 
-		for (Class classObj : statisticList) {
+		for (ClazzDetail classObj : statisticList) {
 			System.out.printf("ID lop: %d - Ten lop: %s - Hoc sinh nam: %d - Hoc sinh nu: %d", classObj.getId(),
 					classObj.getName(), classObj.getTotalMale(), classObj.getTotalFemale());
 			System.out.println();
 		}
 	}
 
-	public void sortByStudentQuantity(ClassService classService) {
-		List<Class> classList = classService.sortByTotalStudent();
+	public void sortByStudentQuantity(ClazzServiceImpl classService) {
+		List<ClazzDetail> classList = classService.sortByTotalStudent();
 
 		if (classList.size() == 0) {
 			System.out.println("Khong co lop hoc nao!");
 		} else {
-			for (Class classTmp : classList) {
+			for (ClazzDetail classTmp : classList) {
 				System.out.printf("ID lop: %d - Ten lop: %s - Tong so hoc sinh: %d", classTmp.getId(),
 						classTmp.getName(), classTmp.getTotalStudent());
 				System.out.println();
@@ -59,16 +72,13 @@ public class ClassManagement {
 		}
 	}
 
-	public void classManagementExecute(ClassService classService, StudentService studentService) {
+	public void classManagementExecute(ClazzServiceImpl classService, StudentServiceImpl studentService) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
-
+		helper = Helper.getInstance();
 		int option = 0;
 		boolean checkOption = true;
-		List<Class> classList = null;
-		Class classTmp = null;
+		List<Clazz> classList = null;
+		Clazz classTmp = null;
 
 		do {
 			System.out.println();
@@ -89,7 +99,8 @@ public class ClassManagement {
 			case 2:
 				classList = classService.getAll();
 				String className = helper.inputClassName(classList, 0, 0);
-				boolean resultAdd = classService.add(className);
+				classTmp = new Clazz(className);
+				boolean resultAdd = classService.add(classTmp);
 
 				if (resultAdd) {
 					System.out.println("Them thanh cong!");
@@ -127,7 +138,7 @@ public class ClassManagement {
 					int size = studentService.getByClassId(classTmp.getId()).size();
 
 					if (size == 0) {
-						boolean resultDelete = classService.delete(classNameDelete);
+						boolean resultDelete = classService.delete(classTmp);
 
 						if (resultDelete) {
 							System.out.println("Xoa thanh cong!");

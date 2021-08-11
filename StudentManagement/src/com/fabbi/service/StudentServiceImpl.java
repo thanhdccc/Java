@@ -3,7 +3,6 @@ package com.fabbi.service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Date;
@@ -12,18 +11,28 @@ import java.util.List;
 import com.fabbi.entity.Student;
 import com.fabbi.util.DBUtil;
 
-public class StudentService {
+public class StudentServiceImpl implements CRUDService<Student> {
 
 	private DBUtil dbUtil = null;
-	private List<Student> studentList = new ArrayList<>();
+	private static StudentServiceImpl instance;
+
+	private StudentServiceImpl() {
+
+	}
+
+	public static StudentServiceImpl getInstance() {
+		if (instance == null) {
+			instance = new StudentServiceImpl();
+		}
+		return instance;
+	}
 
 	public List<Student> getAll() {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		Statement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		int id = 0;
 		String rollnumber = null;
@@ -34,14 +43,14 @@ public class StudentService {
 		String hobby = null;
 		int classId = 0;
 		Student student = null;
+		List<Student> studentList = new ArrayList<>();
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, rollnumber, student_name, dob, gender, "
-					+ "student_address, student_hobby, class_id from students";
+			sql = "SELECT id, rollnumber, name, dob, gender, address, hobby, class_id FROM students";
 
-			Statement statement = con.createStatement();
-			ResultSet result = statement.executeQuery(sql);
+			statement = con.createStatement();
+			result = statement.executeQuery(sql);
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -60,22 +69,17 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, null, statement, result);
 		}
 		return studentList;
 	}
 
 	public List<Student> getByClassId(int idOfClass) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		List<Student> studentListTmp = new ArrayList<>();
 		int id = 0;
@@ -90,12 +94,12 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, rollnumber, student_name, dob, gender, student_address, "
-					+ "student_hobby, class_id from students where class_id = ?";
+			sql = "SELECT id, rollnumber, name, dob, gender, address, "
+					+ "hobby, class_id FROM students WHERE class_id = ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setInt(1, idOfClass);
-			ResultSet result = statement.executeQuery();
+			result = statement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -114,22 +118,16 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, result);
 		}
 		return studentListTmp;
 	}
 
 	public boolean add(Student student) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
 		String sql = null;
 		String rollnumber = student.getRollnumber();
 		String name = student.getName();
@@ -142,10 +140,10 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "insert into students (rollnumber, student_name, dob, gender, student_address, student_hobby, class_id) "
-					+ "values (?, ?, ?, ?, ?, ?, ?)";
+			sql = "INSERT INTO students (rollnumber, name, dob, gender, address, "
+					+ "hobby, class_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-			PreparedStatement statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setString(1, rollnumber);
 			statement.setString(2, name);
 			statement.setDate(3, dob);
@@ -153,30 +151,26 @@ public class StudentService {
 			statement.setString(5, address);
 			statement.setString(6, hobby);
 			statement.setInt(7, classId);
-			statement.executeUpdate();
-			result = true;
+			int resultAdd = statement.executeUpdate();
+			if (resultAdd == 1) {
+				result = true;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, null);
 		}
 		return result;
 	}
 
 	public boolean update(Student student) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
 		String sql = null;
-		String rollnumber = student.getRollnumber();
+		int id = student.getId();
 		String name = student.getName();
 		Date dob = new Date(student.getDob().getTime());
 		String gender = student.getGender();
@@ -187,39 +181,36 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "update students set student_name = ?, dob = ?, gender = ?, "
-					+ "student_address = ?, student_hobby = ?, class_id = ? where rollnumber = ?";
+			sql = "UPDATE students SET name = ?, dob = ?, gender = ?, "
+					+ "address = ?, hobby = ?, class_id = ? WHERE id = ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setString(1, name);
 			statement.setDate(2, dob);
 			statement.setString(3, gender);
 			statement.setString(4, address);
 			statement.setString(5, hobby);
 			statement.setInt(6, classId);
-			statement.setString(7, rollnumber);
-			statement.executeUpdate();
-			result = true;
+			statement.setInt(7, id);
+			int resultUpdate = statement.executeUpdate();
+			if (resultUpdate == 1) {
+				result = true;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, null);
 		}
 		return result;
 	}
 
 	public Student getByRollnumber(String rollnumber) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		int id = 0;
 		String name = null;
@@ -232,12 +223,11 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, student_name, dob, gender, student_address, "
-					+ "student_hobby, class_id from students where rollnumber = ?";
+			sql = "SELECT id, name, dob, gender, address, hobby, class_id FROM students WHERE rollnumber = ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setString(1, rollnumber);
-			ResultSet result = statement.executeQuery();
+			result = statement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -254,22 +244,17 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, result);
 		}
 		return student;
 	}
 
-	public List<Student> getByName(String studentName) {
+	public List<Student> getListStudentByName(String studentName) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		int id = 0;
 		String rollnumber = null;
@@ -284,12 +269,12 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, rollnumber, student_name, dob, gender, student_address, "
-					+ "student_hobby, class_id from students where student_name = ?";
+			sql = "SELECT id, rollnumber, name, dob, gender, address, "
+					+ "hobby, class_id FROM students WHERE name LIKE ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
-			statement.setString(1, studentName);
-			ResultSet result = statement.executeQuery();
+			statement = con.prepareStatement(sql);
+			statement.setString(1, "%" + studentName + "%");
+			result = statement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -308,22 +293,17 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, null, statement, result);
 		}
 		return studentList;
 	}
 
 	public List<Student> getByDOB(Date date) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		int id = 0;
 		String rollnumber = null;
@@ -338,12 +318,11 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, rollnumber, student_name, dob, gender, student_address, "
-					+ "student_hobby, class_id from students where dob = ?";
+			sql = "SELECT id, rollnumber, name, dob, gender, address, hobby, class_id FROM students WHERE dob = ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setDate(1, date);
-			ResultSet result = statement.executeQuery();
+			result = statement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -362,22 +341,17 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, result);
 		}
 		return studentList;
 	}
 
 	public List<Student> getByYear(int year) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		int id = 0;
 		String rollnumber = null;
@@ -392,12 +366,12 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, rollnumber, student_name, dob, gender, student_address, "
-					+ "student_hobby, class_id from students where year(dob) = ?";
+			sql = "SELECT id, rollnumber, name, dob, gender, address, "
+					+ "hobby, class_id FROM students WHERE YEAR(dob) = ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setInt(1, year);
-			ResultSet result = statement.executeQuery();
+			result = statement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -416,22 +390,17 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, result);
 		}
 		return studentList;
 	}
 
 	public List<Student> getStudentListSortByName() {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		Statement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		int id = 0;
 		String rollnumber = null;
@@ -446,11 +415,10 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, rollnumber, student_name, dob, gender, "
-					+ "student_address, student_hobby, class_id from students order by student_name";
+			sql = "SELECT id, rollnumber, name, dob, gender, address, hobby, class_id FROM students ORDER BY name";
 
-			Statement statement = con.createStatement();
-			ResultSet result = statement.executeQuery(sql);
+			statement = con.createStatement();
+			result = statement.executeQuery(sql);
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -469,22 +437,17 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, null, statement, result);
 		}
 		return studentList;
 	}
-	
+
 	public List<Student> getStudentListByGender(String genderSearch) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
 		String sql = null;
 		int id = 0;
 		String rollnumber = null;
@@ -499,12 +462,12 @@ public class StudentService {
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "select student_id, rollnumber, student_name, dob, gender, "
-					+ "student_address, student_hobby, class_id from students where gender = ?";
+			sql = "SELECT id, rollnumber, name, dob, gender, "
+					+ "address, hobby, class_id FROM students WHERE gender = ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
+			statement = con.prepareStatement(sql);
 			statement.setString(1, genderSearch);
-			ResultSet result = statement.executeQuery();
+			result = statement.executeQuery();
 
 			while (result.next()) {
 				id = result.getInt(1);
@@ -523,43 +486,131 @@ public class StudentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, result);
 		}
 		return studentList;
 	}
 
-	public boolean delete(String rollnumber) {
+	public boolean delete(Student student) {
 
-		if (dbUtil == null) {
-			dbUtil = new DBUtil();
-		}
-
+		dbUtil = DBUtil.getInstance();
 		Connection con = null;
+		PreparedStatement statement = null;
 		String sql = null;
 		boolean result = false;
+		int id = student.getId();
 
 		try {
 			con = dbUtil.getConnection();
-			sql = "delete from students where rollnumber = ?";
+			sql = "DELETE FROM students WHERE id = ?";
 
-			PreparedStatement statement = con.prepareStatement(sql);
-			statement.setString(1, rollnumber);
-			statement.executeUpdate();
-			result = true;
+			statement = con.prepareStatement(sql);
+			statement.setInt(1, id);
+			int resultDelete = statement.executeUpdate();
+			if (resultDelete == 1) {
+				result = true;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbUtil.closeConnection(con, statement, null, null);
 		}
 		return result;
+	}
+
+	@Override
+	public Student getById(int studentId) {
+
+		dbUtil = DBUtil.getInstance();
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+		String sql = null;
+		int id = 0;
+		String rollnumber = null;
+		String name = null;
+		Date dob = null;
+		String gender = null;
+		String address = null;
+		String hobby = null;
+		int classId = 0;
+		Student student = null;
+
+		try {
+			con = dbUtil.getConnection();
+			sql = "SELECT id, rollnumber, name, dob, gender, address, hobby, class_id FROM students WHERE id = ?";
+
+			statement = con.prepareStatement(sql);
+			statement.setInt(1, studentId);
+			result = statement.executeQuery();
+
+			while (result.next()) {
+				id = result.getInt(1);
+				rollnumber = result.getString(2);
+				name = result.getString(3);
+				dob = result.getDate(4);
+				gender = result.getString(5);
+				address = result.getString(6);
+				hobby = result.getString(7);
+				classId = result.getInt(8);
+
+				student = new Student(id, rollnumber, name, dob, gender, address, hobby, classId);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbUtil.closeConnection(con, statement, null, result);
+		}
+		return student;
+	}
+
+	@Override
+	public Student getByName(String studentName) {
+
+		dbUtil = DBUtil.getInstance();
+		Connection con = null;
+		PreparedStatement statement = null;
+		ResultSet result = null;
+		String sql = null;
+		int id = 0;
+		String rollnumber = null;
+		String name = null;
+		Date dob = null;
+		String gender = null;
+		String address = null;
+		String hobby = null;
+		int classId = 0;
+		Student student = null;
+
+		try {
+			con = dbUtil.getConnection();
+			sql = "SELECT id, rollnumber, name, dob, gender, address, "
+					+ "hobby, class_id FROM students WHERE name = ?";
+
+			statement = con.prepareStatement(sql);
+			statement.setString(1, studentName);
+			result = statement.executeQuery();
+
+			while (result.next()) {
+				id = result.getInt(1);
+				rollnumber = result.getString(2);
+				name = result.getString(3);
+				dob = result.getDate(4);
+				gender = result.getString(5);
+				address = result.getString(6);
+				hobby = result.getString(7);
+				classId = result.getInt(8);
+
+				student = new Student(id, rollnumber, name, dob, gender, address, hobby, classId);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbUtil.closeConnection(con, statement, null, result);
+		}
+		return student;
 	}
 }

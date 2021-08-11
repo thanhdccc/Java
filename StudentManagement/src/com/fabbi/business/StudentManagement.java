@@ -7,22 +7,34 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import com.fabbi.entity.Student;
-import com.fabbi.entity.Class;
-import com.fabbi.service.ClassService;
-import com.fabbi.service.StudentService;
+import com.fabbi.entity.Clazz;
+import com.fabbi.service.ClazzServiceImpl;
+import com.fabbi.service.StudentServiceImpl;
 import com.fabbi.util.Helper;
 
 public class StudentManagement {
 
 	private Helper helper = null;
+	private static StudentManagement instance;
+	
+	private StudentManagement() {
+		
+	}
+	
+	public static StudentManagement getInstance() {
+		if (instance == null) {
+			instance = new StudentManagement();
+		}
+		return instance;
+	}
 
 	@SuppressWarnings("resource")
-	public void searchStudentByName(StudentService studentService) {
+	public void searchStudentByName(StudentServiceImpl studentService) {
 		Scanner scanner = new Scanner(System.in);
 
 		System.out.print("Nhap ten hoc sinh: ");
 		String name = scanner.nextLine();
-		List<Student> studentList = studentService.getByName(name);
+		List<Student> studentList = studentService.getListStudentByName(name);
 		if (studentList.size() == 0) {
 			System.out.printf("Khong tim thay hoc sinh ten \"%s\"!", name);
 			System.out.println();
@@ -31,11 +43,10 @@ public class StudentManagement {
 		}
 	}
 
-	public void searchStudentByDOB(StudentService studentService) {
+	public void searchStudentByDOB(StudentServiceImpl studentService) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
+		helper = Helper.getInstance();
+		
 		Date date = new Date(helper.inputDOB().getTime());
 
 		List<Student> studentList = studentService.getByDOB(date);
@@ -47,7 +58,7 @@ public class StudentManagement {
 		}
 	}
 
-	public void sortByName(StudentService studentService) {
+	public void sortByName(StudentServiceImpl studentService) {
 
 		List<Student> studentList = studentService.getStudentListSortByName();
 		if (studentList.size() == 0) {
@@ -57,7 +68,7 @@ public class StudentManagement {
 		}
 	}
 
-	public void searchStudentByYear(StudentService studentService) {
+	public void searchStudentByYear(StudentServiceImpl studentService) {
 
 		int year = 2010;
 		List<Student> studentList = studentService.getByYear(year);
@@ -70,11 +81,9 @@ public class StudentManagement {
 	}
 
 	@SuppressWarnings("resource")
-	public void studentUpdateManagement(String rollnumber, StudentService studentService, ClassService classService) {
+	public void studentUpdateManagement(String rollnumber, StudentServiceImpl studentService, ClazzServiceImpl classService) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
+		helper = Helper.getInstance();
 
 		Scanner scanner = new Scanner(System.in);
 		int option = 0;
@@ -154,9 +163,9 @@ public class StudentManagement {
 				break;
 			case 6:
 				student = studentService.getByRollnumber(rollnumber);
-				List<Class> classList = classService.getAll();
+				List<Clazz> classList = classService.getAll();
 				String className = helper.inputClassName(classList, 1, 1);
-				Class classTmp = classService.getByName(className);
+				Clazz classTmp = classService.getByName(className);
 				student.setClassId(classTmp.getId());
 				boolean resultChangeClass = studentService.update(student);
 
@@ -174,19 +183,17 @@ public class StudentManagement {
 	}
 
 	@SuppressWarnings("resource")
-	public void studentManagementExecute(ClassService classService, StudentService studentService) {
+	public void studentManagementExecute(ClazzServiceImpl classService, StudentServiceImpl studentService) {
 
-		if (helper == null) {
-			helper = new Helper();
-		}
+		helper = Helper.getInstance();
 
 		Scanner scanner = new Scanner(System.in);
 		int option = 0;
 		boolean checkOption = true;
 		List<Student> studentList = null;
-		List<Class> classList = null;
+		List<Clazz> classList = null;
 		Student studentTmp = null;
-		Class classTmp = null;
+		Clazz classTmp = null;
 
 		do {
 			System.out.println();
@@ -209,7 +216,7 @@ public class StudentManagement {
 				if (classList.size() == 0) {
 					System.out.println("Khong co lop hoc nao");
 				} else {
-					for (Class classObj : classList) {
+					for (Clazz classObj : classList) {
 						System.out.printf("------> %s <------", classObj.getName());
 						System.out.println();
 
@@ -294,7 +301,8 @@ public class StudentManagement {
 						System.out.println("Khong co hoc sinh nao");
 					} else {
 						String rollnumber = helper.inputRollnumber(studentList, 1);
-						boolean resultDelete = studentService.delete(rollnumber);
+						studentTmp = studentService.getByRollnumber(rollnumber);
+						boolean resultDelete = studentService.delete(studentTmp);
 
 						if (resultDelete) {
 							System.out.println("Xoa thanh cong!");

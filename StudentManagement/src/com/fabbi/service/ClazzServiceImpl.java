@@ -39,7 +39,6 @@ public class ClazzServiceImpl implements CRUDService<Clazz>{
 		int id = 0;
 		String name = null;
 		Clazz classTmp = null;
-		classList.clear();
 
 		try {
 			con = dbUtil.getConnection();

@@ -1,8 +1,8 @@
-package com.fabbi.service;
+package com.fabbi.repository;
 
 import java.util.List;
 
-public interface CRUDService<T> {
+public interface CRUDRepositoty<T> {
 
 	public boolean add(T obj);
 

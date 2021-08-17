@@ -11,16 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.fabbi.entity.Member;
-import com.fabbi.service.MemberServiceImpl;
+import com.fabbi.repository.MemberRepositoty;
 
 
 @WebServlet("/home")
 public class HomeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private MemberServiceImpl memberService;
+	private MemberRepositoty memberService;
 
 	public void init(){
-		memberService = MemberServiceImpl.getInstance();
+		memberService = MemberRepositoty.getInstance();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

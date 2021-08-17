@@ -1,4 +1,4 @@
-package com.fabbi.service;
+package com.fabbi.repository;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -11,9 +11,9 @@ import java.util.List;
 import com.fabbi.entity.Member;
 import com.fabbi.util.DBUtil;
 
-public class MemberServiceImpl implements CRUDService<Member> {
+public class MemberRepositoty implements CRUDRepositoty<Member> {
 	
-	private static MemberServiceImpl instance;
+	private static MemberRepositoty instance;
 	private DBUtil dbUtil = null;
 	private Connection con = null;
 	private Statement statement = null;
@@ -30,13 +30,13 @@ public class MemberServiceImpl implements CRUDService<Member> {
 	private String phone = null;
 	private Member member = null;
 	
-	private MemberServiceImpl() {
+	private MemberRepositoty() {
 		dbUtil = DBUtil.getInstance();
 	}
 	
-	public static MemberServiceImpl getInstance() {
+	public static MemberRepositoty getInstance() {
 		if (instance == null) {
-			instance = new MemberServiceImpl();
+			instance = new MemberRepositoty();
 		}
 		return instance;
 	}

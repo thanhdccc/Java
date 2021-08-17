@@ -13,7 +13,7 @@
 <body>
 	<h2 style="text-align: center;">Edit Member</h2>
 	<div align="center">
-		<form action="<%=request.getContextPath()%>/home" method="POST">
+		<form action="<%=request.getContextPath()%>/account" method="POST">
 			<input type="hidden" name="action" value="edit" />
 			<input type="hidden" name="id_update" value="${memberUpdate.getId()}" />
 			<table>
@@ -22,7 +22,7 @@
 						<label>Name: </label>
 					</td>
 					<td>
-						<input type="text" name="name_create" required="required" value="${memberUpdate.getName()}" />
+						<input type="text" name="name_update" required="required" value="${memberUpdate.getName()}" />
 					</td>
 				</tr>
 				<tr>
@@ -30,7 +30,7 @@
 						<label>Date of Birth: </label>
 					</td>
 					<td>
-						<input type="date" name="dob_create" required="required" value="${memberUpdate.getDob()}" />
+						<input type="date" name="dob_update" required="required" value="${memberUpdate.getDob()}" />
 					</td>
 				</tr>
 				<tr>
@@ -38,7 +38,7 @@
 						<label>Email: </label>
 					</td>
 					<td>
-						<input type="text" name="email_create" required="required" value="${memberUpdate.getEmail()}" />
+						<input type="text" name="email_update" required="required" value="${memberUpdate.getEmail()}" />
 					</td>
 				</tr>
 				<tr>
@@ -46,7 +46,7 @@
 						<label>Phone: </label>
 					</td>
 					<td>
-						<input type="text" name="phone_create" required="required" value="${memberUpdate.getPhone()}" />
+						<input type="text" name="phone_update" required="required" value="${memberUpdate.getPhone()}" />
 					</td>
 				</tr>
 				<tr>
@@ -54,7 +54,7 @@
 						<label>Address: </label>
 					</td>
 					<td>
-						<input type="text" name="address_create" required="required" value="${memberUpdate.getAddress()}" />
+						<input type="text" name="address_update" required="required" value="${memberUpdate.getAddress()}" />
 					</td>
 				</tr>
 				<tr>

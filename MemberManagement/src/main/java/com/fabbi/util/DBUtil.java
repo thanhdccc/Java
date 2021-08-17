@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBUtil {
 
@@ -14,8 +16,25 @@ public class DBUtil {
 	private static final String USERNAME = "root";
 	private static final String PASSWORD = "gaiaknight";
 	private static DBUtil instance;
+	private static List<Connection> conList = new ArrayList<>();
+	private int i = 0;
 
 	private DBUtil() {
+		for (int i = 0; i < 5; i++) {
+			try {
+				Class.forName(JDBC_DRIVER);
+				Connection con = DriverManager.getConnection(CONNECTION_STRING, USERNAME, PASSWORD);
+
+				if (con != null) {
+
+					conList.add(con);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static DBUtil getInstance() {
@@ -26,20 +45,12 @@ public class DBUtil {
 	}
 
 	public Connection getConnection() {
-		try {
-			Class.forName(JDBC_DRIVER);
-			Connection con = DriverManager.getConnection(CONNECTION_STRING, USERNAME, PASSWORD);
-
-			if (con != null) {
-
-				return con;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+		Connection con = conList.get(i);
+		i++;
+		if (i == 4) {
+			i = 0;
 		}
-		return null;
+		return con;
 	}
 	
 	public void closeConnection(Connection con, PreparedStatement ps, Statement st, ResultSet rs) {

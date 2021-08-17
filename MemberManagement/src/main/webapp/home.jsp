@@ -28,7 +28,7 @@
 		<a href="home?action=logout" class="btn btn-danger">Logout</a>
 	</h2>
 	<h2 style="text-align: center;">
-		<a href="home?action=new" class="btn btn-success">Add</a>
+		<a href="account?action=new" class="btn btn-success">Add</a>
 	</h2>
 	<div class="row" align="center">
 		<div class="container">
@@ -56,8 +56,8 @@
 						<td><c:out value="${member.getPhone()}"></c:out></td>
 						<td><c:out value="${member.getAddress()}"></c:out></td>
 						<td style="text-align: center;">
-							<a class="btn btn-success" href="home?action=edit&id=${member.getId()}">Edit</a>
-							<a class="btn btn-warning" href="home?action=delete&id=${member.getId()}">Delete</a>
+							<a class="btn btn-success" href="account?action=edit&id=${member.getId()}">Edit</a>
+							<a class="btn btn-warning" href="account?action=delete&id=${member.getId()}">Delete</a>
 						</td>
 					</tr>
 				</c:forEach>

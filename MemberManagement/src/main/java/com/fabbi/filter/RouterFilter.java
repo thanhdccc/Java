@@ -43,7 +43,7 @@ public class RouterFilter implements Filter {
 		HttpSession session = requestTmp.getSession();
 		
 		if (session.getAttribute("username") == null && !requestURI.endsWith("login.jsp") && !requestURI.endsWith("login")) {
-			responseTmp.sendRedirect("login.jsp");
+			responseTmp.sendRedirect("/MemberManagement/login");
 		} else {
 			chain.doFilter(request, response);
 		}

@@ -31,7 +31,7 @@ public class MemberServiceImpl implements CRUDService<Member> {
 	private Member member = null;
 	
 	private MemberServiceImpl() {
-		
+		dbUtil = DBUtil.getInstance();
 	}
 	
 	public static MemberServiceImpl getInstance() {
@@ -44,7 +44,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 	@Override
 	public boolean add(Member obj) {
 		
-		dbUtil = DBUtil.getInstance();
 		username = obj.getUsername();
 		password = obj.getPassword();
 		name = obj.getName();
@@ -73,8 +72,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -82,7 +79,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 	@Override
 	public boolean update(Member obj) {
 
-		dbUtil = DBUtil.getInstance();
 		id = obj.getId();
 		username = obj.getUsername();
 		password = obj.getPassword();
@@ -113,16 +109,13 @@ public class MemberServiceImpl implements CRUDService<Member> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
 
 	@Override
 	public boolean delete(Member obj) {
-
-		dbUtil = DBUtil.getInstance();
+		
 		id = obj.getId();
 		boolean result = false;
 		
@@ -139,8 +132,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			dbUtil.closeConnection(con, prepareStatement, null, null);
 		}
 		return result;
 	}
@@ -148,8 +139,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 	@Override
 	public Member getById(int memberId) {
 
-		dbUtil = DBUtil.getInstance();
-		
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, username, password, name, dob, email, phone, address FROM members WHERE id = ?";
@@ -173,8 +162,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return member;
 	}
@@ -182,8 +169,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 	@Override
 	public Member getByName(String memberName) {
 
-		dbUtil = DBUtil.getInstance();
-		
 		try {
 			con = dbUtil.getConnection();
 			sql = "SELECT id, username, password, name, dob, email, phone, address FROM members WHERE name = ?";
@@ -207,8 +192,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return member;
 	}
@@ -216,7 +199,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 	@Override
 	public List<Member> getAll() {
 		
-		dbUtil = DBUtil.getInstance();
 		List<Member> memberList = new ArrayList<>();
 		
 		try {
@@ -242,38 +224,12 @@ public class MemberServiceImpl implements CRUDService<Member> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			dbUtil.closeConnection(con, null, statement, result);
 		}
 		return memberList;
 	}
-
-//	public boolean getByUsername(String memberUsername) {
-//
-//		dbUtil = DBUtil.getInstance();
-//		boolean resultGet = false;
-//		
-//		try {
-//			con = dbUtil.getConnection();
-//			sql = "SELECT id, username FROM members WHERE username = ?";
-//			
-//			prepareStatement = con.prepareStatement(sql);
-//			prepareStatement.setString(1, memberUsername);
-//			result = prepareStatement.executeQuery();
-//			
-//			resultGet = result.next();
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//			dbUtil.closeConnection(con, prepareStatement, null, result);
-//		}
-//		return resultGet;
-//	}
 	
 	public boolean getByUsernameAndPassword(String memberUsername, String memberPassword) {
 
-		dbUtil = DBUtil.getInstance();
 		boolean resultLogin = false;
 		
 		try {
@@ -289,8 +245,6 @@ public class MemberServiceImpl implements CRUDService<Member> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			dbUtil.closeConnection(con, prepareStatement, null, result);
 		}
 		return resultLogin;
 	}

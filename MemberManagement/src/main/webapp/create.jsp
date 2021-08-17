@@ -12,7 +12,7 @@
 <body>
 	<h2 style="text-align: center;">Add New</h2>
 	<div align="center">
-		<form action="<%=request.getContextPath()%>/home" method="POST">
+		<form action="<%=request.getContextPath()%>/account" method="POST">
 		<input type="hidden" name="action" value="new" />
 			<table>
 				<tr>

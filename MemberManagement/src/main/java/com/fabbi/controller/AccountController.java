@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fabbi.entity.Member;
-import com.fabbi.repository.MemberRepositoty;
+import com.fabbi.repository.MemberRepository;
 import com.fabbi.util.Helper;
 
 /**
@@ -21,11 +21,11 @@ import com.fabbi.util.Helper;
 public class AccountController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Helper helper;
-	private MemberRepositoty memberService;
+	private MemberRepository memberService;
 
 	public void init(){
 		helper = Helper.getInstance();
-		memberService = MemberRepositoty.getInstance();
+		memberService = MemberRepository.getInstance();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

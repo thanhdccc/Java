@@ -11,9 +11,9 @@ import java.util.List;
 import com.fabbi.entity.Member;
 import com.fabbi.util.DBUtil;
 
-public class MemberRepositoty implements CRUDRepositoty<Member> {
+public class MemberRepository implements CRUDRepository<Member> {
 	
-	private static MemberRepositoty instance;
+	private static MemberRepository instance;
 	private DBUtil dbUtil = null;
 	private Connection con = null;
 	private Statement statement = null;
@@ -30,13 +30,13 @@ public class MemberRepositoty implements CRUDRepositoty<Member> {
 	private String phone = null;
 	private Member member = null;
 	
-	private MemberRepositoty() {
+	private MemberRepository() {
 		dbUtil = DBUtil.getInstance();
 	}
 	
-	public static MemberRepositoty getInstance() {
+	public static MemberRepository getInstance() {
 		if (instance == null) {
-			instance = new MemberRepositoty();
+			instance = new MemberRepository();
 		}
 		return instance;
 	}

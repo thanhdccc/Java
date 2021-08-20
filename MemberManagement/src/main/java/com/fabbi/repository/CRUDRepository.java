@@ -2,7 +2,7 @@ package com.fabbi.repository;
 
 import java.util.List;
 
-public interface CRUDRepositoty<T> {
+public interface CRUDRepository<T> {
 
 	public boolean add(T obj);
 

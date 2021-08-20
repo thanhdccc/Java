@@ -1,0 +1,9 @@
+package com.fabbi.dao;
+
+import java.util.List;
+
+import com.fabbi.model.NewModel;
+
+public interface INewDAO extends GenericDAO<NewModel> {
+	List<NewModel> findAll();
+}

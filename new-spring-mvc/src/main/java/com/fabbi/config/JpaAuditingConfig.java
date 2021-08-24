@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JpaAuditingConfig {
@@ -21,7 +22,7 @@ public class JpaAuditingConfig {
 		@Override
 		public String getCurrentAuditor() {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			if(authentication == null) {
+			if (authentication == null) {
 				return null;
 			}
 			return authentication.getName();

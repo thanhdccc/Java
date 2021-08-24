@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.fabbi.constant.SystemConstant;
-import com.fabbi.dto.UserDTO;
+import com.fabbi.dto.MyUser;
 import com.fabbi.entity.RoleEntity;
 import com.fabbi.entity.UserEntity;
 import com.fabbi.repository.UserRepository;
@@ -31,11 +31,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("User not found");
 		}
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		for(RoleEntity role : userEntity.getRoles()) {
+		for (RoleEntity role: userEntity.getRoles()) {
 			authorities.add(new SimpleGrantedAuthority(role.getCode()));
 		}
-		UserDTO myUser = new UserDTO(userEntity.getUserName(), userEntity.getPassword(), true, true, true, true, authorities);
-		myUser.setFullname(userEntity.getFullName());
+		MyUser myUser = new MyUser(userEntity.getUserName(), userEntity.getPassword(), 
+							true, true, true, true, authorities);
+		myUser.setFullName(userEntity.getFullName());
 		return myUser;
 	}
 

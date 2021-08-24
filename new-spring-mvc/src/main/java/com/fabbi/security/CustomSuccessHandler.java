@@ -28,15 +28,15 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		}
 		redirectStrategy.sendRedirect(request, response, targetUrl);
 	}
-	
+
 	public RedirectStrategy getRedirectStrategy() {
 		return redirectStrategy;
 	}
-
+	
 	public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
 		this.redirectStrategy = redirectStrategy;
 	}
-
+	
 	private String determineTargetUrl(Authentication authentication) {
 		String url = "";
 		List<String> roles = SecurityUtils.getAuthorities();

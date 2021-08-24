@@ -1,30 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
 <meta charset="UTF-8">
 <title>Trang chủ</title>
+
 </head>
+
 <body>
-	<!-- Page Content-->
-	<div class="container px-4 px-lg-5">
-		<!-- Heading Row-->
-		<div class="row gx-4 gx-lg-5 align-items-center my-5">
+
+	<!-- Page Content -->
+	<div class="container">
+
+		<!-- Heading Row -->
+		<div class="row align-items-center my-5">
 			<div class="col-lg-7">
 				<img class="img-fluid rounded mb-4 mb-lg-0"
-					src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg" alt="..." />
+					src="http://placehold.it/900x400" alt="">
 			</div>
+			<!-- /.col-lg-8 -->
 			<div class="col-lg-5">
 				<h1 class="font-weight-light">Business Name or Tagline</h1>
 				<p>This is a template that is great for small businesses. It
 					doesn't have too much fancy flare to it, but it makes a great use
 					of the standard Bootstrap core components. Feel free to use this
 					template for any project you want!</p>
-				<a class="btn btn-primary" href="#!">Call to Action!</a>
+				<a class="btn btn-primary" href="#">Call to Action!</a>
 			</div>
+			<!-- /.col-md-4 -->
 		</div>
-		<!-- Call to Action-->
+		<!-- /.row -->
+
+		<!-- Call to Action Well -->
 		<div class="card text-white bg-secondary my-5 py-4 text-center">
 			<div class="card-body">
 				<p class="text-white m-0">This call to action card is a great
@@ -32,8 +43,9 @@
 					tagline!</p>
 			</div>
 		</div>
-		<!-- Content Row-->
-		<div class="row gx-4 gx-lg-5">
+
+		<!-- Content Row -->
+		<div class="row">
 			<div class="col-md-4 mb-5">
 				<div class="card h-100">
 					<div class="card-body">
@@ -43,10 +55,11 @@
 							molestias corporis quod, ea minima accusamus.</p>
 					</div>
 					<div class="card-footer">
-						<a class="btn btn-primary btn-sm" href="#!">More Info</a>
+						<a href="#" class="btn btn-primary btn-sm">More Info</a>
 					</div>
 				</div>
 			</div>
+			<!-- /.col-md-4 -->
 			<div class="col-md-4 mb-5">
 				<div class="card h-100">
 					<div class="card-body">
@@ -57,10 +70,11 @@
 							voluptates quos eligendi labore.</p>
 					</div>
 					<div class="card-footer">
-						<a class="btn btn-primary btn-sm" href="#!">More Info</a>
+						<a href="#" class="btn btn-primary btn-sm">More Info</a>
 					</div>
 				</div>
 			</div>
+			<!-- /.col-md-4 -->
 			<div class="col-md-4 mb-5">
 				<div class="card h-100">
 					<div class="card-body">
@@ -70,11 +84,18 @@
 							molestias corporis quod, ea minima accusamus.</p>
 					</div>
 					<div class="card-footer">
-						<a class="btn btn-primary btn-sm" href="#!">More Info</a>
+						<a href="#" class="btn btn-primary btn-sm">More Info</a>
 					</div>
 				</div>
 			</div>
+			<!-- /.col-md-4 -->
+
 		</div>
+		<!-- /.row -->
+
 	</div>
+	<!-- /.container -->
+
 </body>
+
 </html>

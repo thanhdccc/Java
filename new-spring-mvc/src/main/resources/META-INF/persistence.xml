@@ -4,5 +4,7 @@
         <class>com.fabbi.entity.NewEntity</class>
         <class>com.fabbi.entity.UserEntity</class>
         <class>com.fabbi.entity.RoleEntity</class>
+        <class>com.fabbi.entity.CategoryEntity</class>
     </persistence-unit>
 </persistence>
+

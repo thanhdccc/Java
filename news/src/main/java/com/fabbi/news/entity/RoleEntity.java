@@ -1,47 +1,33 @@
 package com.fabbi.news.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
+
+import com.fabbi.news.util.ERole;
 
 @Entity
 @Table(name = "role")
 public class RoleEntity extends BaseEntity {
 	
-	@Column
-	private String code;
-	
-	@Column
-	private String name;
-	
-	@ManyToMany(mappedBy = "roles")
-    private List<UserEntity> users = new ArrayList<>();
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
+	private ERole name;
 
-	public String getCode() {
-		return code;
+	public RoleEntity() {
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
+	public RoleEntity(ERole name) {
 		this.name = name;
 	}
 
-	public List<UserEntity> getUsers() {
-		return users;
+	public ERole getName() {
+		return name;
 	}
 
-	public void setUsers(List<UserEntity> users) {
-		this.users = users;
+	public void setName(ERole name) {
+		this.name = name;
 	}
 }

@@ -3,6 +3,7 @@ package com.fabbi.news.api;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,24 +23,27 @@ public class NewAPI {
 	@Autowired
 	private INewService newService;
 	
-	@GetMapping(value = "/new")
+	@GetMapping(value = "/api/new")
 	public List<NewDTO> showNew() {
 		List<NewDTO> results = newService.findAll();
 		return results;
 	}
 
-	@PostMapping(value = "/new")
+	@PostMapping(value = "/api/new")
+	@PreAuthorize("hasRole('ADMIN')")
 	public NewDTO createNew(@RequestBody NewDTO model) {
 		return newService.save(model);
 	}
 	
-	@PutMapping(value = "/new/{id}")
+	@PutMapping(value = "/api/new/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public NewDTO updateNew(@RequestBody NewDTO model, @PathVariable("id") long id) {
 		model.setId(id);
 		return newService.save(model);
 	}
 	
-	@DeleteMapping(value = "/new")
+	@DeleteMapping(value = "/api/new")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteNew(@RequestBody long[] ids) {
 		newService.delete(ids);
 	}

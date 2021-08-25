@@ -7,5 +7,4 @@ import com.fabbi.news.entity.NewEntity;
 public interface NewRepository extends JpaRepository<NewEntity, Long> {
 
 	NewEntity findOneById(Long id);
-
 }

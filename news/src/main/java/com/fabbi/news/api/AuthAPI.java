@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fabbi.news.dto.JwtResponseDTO;
+import com.fabbi.news.dto.JwtDTO;
 import com.fabbi.news.dto.SigninDTO;
 import com.fabbi.news.dto.MessageDTO;
 import com.fabbi.news.dto.SignupDTO;
@@ -65,7 +65,7 @@ public class AuthAPI {
 				.map(r -> r.getAuthority())
 				.collect(Collectors.toList());
 		
-		return ResponseEntity.ok(new JwtResponseDTO(jwt,
+		return ResponseEntity.ok(new JwtDTO(jwt,
 				userDetails.getId(),
 				userDetails.getUsername(),
 				roles));

@@ -2,9 +2,14 @@ package com.fabbi.news.dto;
 
 import java.util.Set;
 
+import javax.validation.constraints.NotBlank;
+
 public class SignupDTO {
 	
+	@NotBlank(message = "Username is mandatory")
 	private String username;
+	
+	@NotBlank(message = "Password is mandatory")
 	private String password;
 	private Set<String> role;
 

@@ -2,7 +2,7 @@ package com.fabbi.news.dto;
 
 import java.util.List;
 
-public class JwtResponseDTO {
+public class JwtDTO {
 
 	private String token;
 	private String type = "Bearer";
@@ -10,7 +10,7 @@ public class JwtResponseDTO {
 	private String username;
 	private List<String> roles;
 	
-	public JwtResponseDTO(String accessToken, Long id, String username, List<String> roles) {
+	public JwtDTO(String accessToken, Long id, String username, List<String> roles) {
 		this.token = accessToken;
 		this.id = id;
 		this.username = username;

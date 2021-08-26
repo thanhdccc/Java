@@ -1,12 +1,21 @@
 package com.fabbi.news.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class NewDTO extends AbstractDTO<NewDTO> {
 
+	@NotBlank(message = "Title is mandatory")
 	private String title;
-	private String content;
-	private String shortDescription;
-	private String categoryCode;
 	
+	@NotBlank(message = "Content is mandatory")
+	private String content;
+	
+	@NotBlank(message = "Short Description is mandatory")
+	private String shortDescription;
+	
+	@NotBlank(message = "Category is mandatory")
+	private String categoryCode;
+
 	public String getTitle() {
 		return title;
 	}

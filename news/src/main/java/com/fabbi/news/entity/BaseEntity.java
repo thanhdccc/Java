@@ -23,11 +23,11 @@ public abstract class BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column
+	@Column(updatable=false)
 	@CreatedBy
 	private String createdBy;
 	
-	@Column
+	@Column(updatable=false)
 	@CreatedDate
 	private Date createdDate;
 	
@@ -39,6 +39,10 @@ public abstract class BaseEntity {
 	@LastModifiedDate
 	private Date modifiedDate;
 	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
 	}

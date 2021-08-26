@@ -3,10 +3,10 @@ package com.fabbi.news.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fabbi.news.converter.NewConverter;
 import com.fabbi.news.dto.NewDTO;
 import com.fabbi.news.entity.CategoryEntity;
 import com.fabbi.news.entity.NewEntity;
@@ -24,21 +24,26 @@ public class NewService implements INewService {
 	private CategoryRepository categoryRepository;
 	
 	@Autowired
-	private NewConverter newConverter;
+	private ModelMapper mapper;
 
 	@Override
 	public NewDTO save(NewDTO newDTO) {
 		NewEntity newEntity = new NewEntity();
 		if (newDTO.getId() != null) {
 			NewEntity oldNewEntity = newRepository.findOneById(newDTO.getId());
-			newEntity = newConverter.toEntity(newDTO, oldNewEntity);
+			oldNewEntity = mapper.map(newDTO, NewEntity.class);
+			newEntity = oldNewEntity;
 		} else {
-			newEntity = newConverter.toEntity(newDTO);
+			newEntity = mapper.map(newDTO, NewEntity.class);
 		}
+		
 		CategoryEntity categoryEntity = categoryRepository.findOneByCode(newDTO.getCategoryCode());
 		newEntity.setCategory(categoryEntity);
 		newEntity = newRepository.save(newEntity);
-		return newConverter.toDTO(newEntity);
+		NewDTO result = mapper.map(newEntity, NewDTO.class);
+		result.setCategoryCode(categoryEntity.getCode());
+		
+		return result;
 	}
 
 	@Override
@@ -53,7 +58,8 @@ public class NewService implements INewService {
 		List<NewDTO> results = new ArrayList<>();
 		List<NewEntity> entities = newRepository.findAll();
 		for (NewEntity item : entities) {
-			NewDTO newDTO = newConverter.toDTO(item);
+			NewDTO newDTO = mapper.map(item, NewDTO.class);
+			newDTO.setCategoryCode(item.getCategory().getCode());
 			results.add(newDTO);
 		}
 		return results;

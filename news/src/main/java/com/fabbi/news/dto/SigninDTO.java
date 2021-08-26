@@ -1,6 +1,6 @@
 package com.fabbi.news.dto;
 
-public class LoginRequest {
+public class SigninDTO {
 
 	private String username;
 	private String password;

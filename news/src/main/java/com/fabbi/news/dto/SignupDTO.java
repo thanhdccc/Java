@@ -2,7 +2,7 @@ package com.fabbi.news.dto;
 
 import java.util.Set;
 
-public class SignupRequest {
+public class SignupDTO {
 	
 	private String username;
 	private String password;

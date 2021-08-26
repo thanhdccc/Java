@@ -1,10 +1,10 @@
 package com.fabbi.news.dto;
 
-public class MessageResponse {
+public class MessageDTO {
 	
 	private String message;
 
-	public MessageResponse(String message) {
+	public MessageDTO(String message) {
 	    this.message = message;
 	  }
 

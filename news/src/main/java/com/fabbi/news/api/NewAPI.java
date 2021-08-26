@@ -30,13 +30,13 @@ public class NewAPI {
 	}
 
 	@PostMapping(value = "/api/new")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
 	public NewDTO createNew(@RequestBody NewDTO model) {
 		return newService.save(model);
 	}
 	
 	@PutMapping(value = "/api/new/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
 	public NewDTO updateNew(@RequestBody NewDTO model, @PathVariable("id") long id) {
 		model.setId(id);
 		return newService.save(model);

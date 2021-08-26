@@ -1,8 +1,6 @@
 package com.fabbi.news.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class AbstractDTO<T> {
 
@@ -11,7 +9,6 @@ public class AbstractDTO<T> {
 	private Date createdDate;
 	private String modifiedBy;
 	private Date modifiedDate;
-	private List<T> listResult = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -42,11 +39,5 @@ public class AbstractDTO<T> {
 	}
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
-	}
-	public List<T> getListResult() {
-		return listResult;
-	}
-	public void setListResult(List<T> listResult) {
-		this.listResult = listResult;
 	}
 }

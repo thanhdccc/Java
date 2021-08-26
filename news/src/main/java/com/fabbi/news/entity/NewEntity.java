@@ -13,9 +13,6 @@ public class NewEntity extends BaseEntity {
 	@Column(name = "title")
 	private String title;
 	
-	@Column(name = "thumbnail")
-	private String thumbnail;
-	
 	@Column(name = "shortdescription")
 	private String shortDescription;
 	
@@ -33,15 +30,7 @@ public class NewEntity extends BaseEntity {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
-	public String getThumbnail() {
-		return thumbnail;
-	}
-
-	public void setThumbnail(String thumbnail) {
-		this.thumbnail = thumbnail;
-	}
-
+	
 	public String getShortDescription() {
 		return shortDescription;
 	}

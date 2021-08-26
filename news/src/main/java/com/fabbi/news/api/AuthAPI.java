@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fabbi.news.dto.JwtResponse;
-import com.fabbi.news.dto.LoginRequest;
-import com.fabbi.news.dto.MessageResponse;
-import com.fabbi.news.dto.SignupRequest;
+import com.fabbi.news.dto.JwtResponseDTO;
+import com.fabbi.news.dto.SigninDTO;
+import com.fabbi.news.dto.MessageDTO;
+import com.fabbi.news.dto.SignupDTO;
 import com.fabbi.news.entity.RoleEntity;
 import com.fabbi.news.entity.UserEntity;
 import com.fabbi.news.repository.RoleRepository;
@@ -52,7 +52,7 @@ public class AuthAPI {
 	JwtUtils jwtUtils;
 	
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Validated @RequestBody SigninDTO loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername()
 						, loginRequest.getPassword()));
@@ -65,18 +65,18 @@ public class AuthAPI {
 				.map(r -> r.getAuthority())
 				.collect(Collectors.toList());
 		
-		return ResponseEntity.ok(new JwtResponse(jwt,
+		return ResponseEntity.ok(new JwtResponseDTO(jwt,
 				userDetails.getId(),
 				userDetails.getUsername(),
 				roles));
 	}
 	
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest) {
+	public ResponseEntity<?> registerUser(@Validated @RequestBody SignupDTO signupRequest) {
 		if (userRepository.existsByUsername(signupRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+					.body(new MessageDTO("Error: Username is already taken!"));
 		}
 		
 		UserEntity user = new UserEntity(
@@ -97,6 +97,11 @@ public class AuthAPI {
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(adminRole);
 					break;
+				case "mod":
+					RoleEntity modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					roles.add(modRole);
+					break;
 				default:
 					RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -108,6 +113,6 @@ public class AuthAPI {
 		user.setRoles(roles);
 		userRepository.save(user);
 		
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(new MessageDTO("User registered successfully!"));
 	}
 }
